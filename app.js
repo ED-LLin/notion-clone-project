@@ -38,6 +38,7 @@ app.set('layout', './layouts/main')
 // Routes
 app.use('/', require('./server/routes/auth'));
 app.use('/', require('./server/routes/index'));
+app.use('/', require('./server/routes/dashboard'));
 
 
 app.listen(port, () => {
