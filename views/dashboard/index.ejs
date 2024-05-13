@@ -6,7 +6,8 @@
     <title>Document</title>
 </head>
 <body>
-    dashboard page
+    Hey, <%= user.firstName %>
+    <button onclick="location.href='/dashboard/add'">+ New Note</button>
     <% if(notes.length > 0) { %>
         <ul>
             <% for (var i = 0; i < notes.length; i++) { %>
@@ -22,6 +23,7 @@
         </ul>
     <% } else { %>
         <p>no notes yet</p>
+        <a href="/dashboard/add">Create your first note</a>
     <% } %>
 </body>
 </html>
