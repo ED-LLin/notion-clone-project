@@ -8,7 +8,7 @@
     <nav>
         <a href="/dashboard">Dashboard</a> / <a href="#"><%= note.title %></a>
     </nav>
-    <form action="/dashboard/update/<%= note._id %>" method="POST">
+    <form action="/dashboard/update/item/<%= note._id %>" method="POST">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" value="<%= note.title %>">
 
@@ -17,6 +17,13 @@
 
         <button type="submit">Update Note</button>
     </form>
+    <!-- failed to override delete method -->
+    <!-- <form action="/dashboard/delete/item/<%= note._id %>" method="POST">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit">Delete Note</button>
+    </form> -->
+    <form action="/dashboard/delete/item/<%= note._id %>?_method=DELETE" method="POST">
+        <button type="submit">Delete Note</button>
+    </form>
 </body>
-</html>
 </html>

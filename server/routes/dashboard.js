@@ -8,7 +8,8 @@ router.get('/dashboard',isLoggedIn ,dashboardController.dashboard);
 router.get('/dashboard/add',isLoggedIn ,dashboardController.dashboardAddNote);
 router.post('/dashboard/submit',isLoggedIn ,dashboardController.dashboardSubmitNote);
 router.get('/dashboard/item/:id',isLoggedIn ,dashboardController.dashboardViewNote);
-router.post('/dashboard/update/:id',isLoggedIn ,dashboardController.dashboardUpdateNote);
+router.post('/dashboard/update/item/:id', isLoggedIn ,dashboardController.dashboardUpdateNote);
+router.delete('/dashboard/delete/item/:id', isLoggedIn ,dashboardController.dashboardDeleteNote);
 
 
 module.exports = router;

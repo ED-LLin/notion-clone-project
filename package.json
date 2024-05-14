@@ -6,10 +6,8 @@
     "dev": "node -r dotenv/config app.js"
   },
   "dependencies": {
-    "dotenv": "^16.4.4",
-    "punycode": "^2.3.1",
-
     "connect-mongo": "^4.6.0",
+    "dotenv": "^16.4.4",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
@@ -17,7 +15,8 @@
     "method-override": "^3.0.0",
     "mongoose": "^6.12.6",
     "passport": "^0.6.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "punycode": "^2.3.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

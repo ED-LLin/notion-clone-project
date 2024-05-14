@@ -74,3 +74,16 @@ exports.dashboardUpdateNote = async(req, res) => {
         res.status(500).send("Unable to update note.");
     }
 };
+
+exports.dashboardDeleteNote = async(req, res) => {
+    try {
+        const noteId = req.params.id;
+        const note = await Note.findById(noteId);
+
+        await Note.deleteOne({ _id: noteId , user: req.user.id});
+        res.redirect('/dashboard');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error deleting the note.");
+    }
+};
