@@ -10,6 +10,7 @@ router.post('/dashboard/notes',isLoggedIn ,dashboardController.dashboardSubmitNo
 router.get('/dashboard/notes/:id',isLoggedIn ,dashboardController.dashboardViewNote);
 router.put('/dashboard/notes/:id', isLoggedIn ,dashboardController.dashboardUpdateNote);
 router.delete('/dashboard/notes/:id', isLoggedIn ,dashboardController.dashboardDeleteNote);
+router.get('/dashboard/search', isLoggedIn ,dashboardController.dashboardSearch);
 
 
 module.exports = router;

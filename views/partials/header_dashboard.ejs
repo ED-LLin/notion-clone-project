@@ -1,3 +1,8 @@
 <header>
+    <a href="/dashboard">Home Page</a>
     <button onclick="location.href='/logout'">Log out</button>
+    <form action="/dashboard/search" method="GET">
+        <input type="text" name="searchTerm" placeholder="Search Notes">
+        <button type="submit">Search</button>
+    </form>
 </header>

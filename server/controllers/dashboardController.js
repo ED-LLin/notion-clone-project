@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Note = require('../models/Note');
 const User = require('../models/User');
+const { search } = require('../routes');
 
 // show dashboard
 exports.dashboard = async(req, res) => {
@@ -85,5 +86,28 @@ exports.dashboardDeleteNote = async(req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send("Error deleting the note.");
+    }
+};
+
+// GET Search result
+exports.dashboardSearch = async (req, res) => {
+    try {
+        let searchTerm = req.query.searchTerm;
+        const searchNoSpecialChars = searchTerm.replace(/[^\w\u4e00-\u9fff]/g, "");
+        const notes = await Note.find({
+            $or: [
+                { title: { $regex: new RegExp(searchNoSpecialChars, 'i') }},
+                { body: { $regex: new RegExp(searchNoSpecialChars, 'i') }},
+            ]
+        }).where({ user: req.user.id})
+        .lean();
+
+        res.render('dashboard/search', {
+            notes,
+            layout: '../views/layouts/dashboard'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error during search.");
     }
 };

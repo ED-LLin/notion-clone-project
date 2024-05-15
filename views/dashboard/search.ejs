@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <% if(notes != '') { %>
+        <ul>
+            <% for (var i = 0; i < notes.length; i++) { %>
+                <li>
+                    <a href="/dashboard/notes/<%= notes[i]._id %>">
+                        <%= notes[i].title %>
+                    </a>
+                    <ul>
+                        <li><%= notes[i].body %></li>
+                    </ul>
+                </li>
+            <% } %>
+        </ul>
+    <% } else { %>
+        <p>No items found.</p>
+    <% } %>
+</body>
+</html>
