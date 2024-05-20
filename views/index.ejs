@@ -3,9 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index page</title>
+    <title><%= locals.title %></title>
+    <meta name="description" content="<%= description %>">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>index.ejs shown</h1>
+<div class="flex flex-col min-h-screen bg-white pt-14">
+    <main class="flex-1 bg-white">
+        <section class="w-full pt-6 pb-4 md:pt-12 md:pb-0 lg:pt-12 lg:pb-0 xl:pt-12 xl:pb-0 bg-gray-100 min-h-screen">
+            <div class="flex w-full items-center">
+                <div class="flex-1 p-20">
+                    <div class="flex flex-col space-y-4 w-full justify-center">
+                        <div class="space-y-2 w-full">
+                            <h1 class="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl text-gray-900">
+                                Ease you note taking process
+                            </h1>
+                            <p class="text-gray-700 md:text-sm pt-2">
+                                A powerful note-taking app that helps you stay organized and focused. Capture ideas, plan projects, and collaborate with ease.
+                            </p>
+                        </div>
+                        <div class="flex flex-col gap-2 min-[400px]:flex-row">
+                            <a
+                                class="inline-flex h-10 w-auto items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-white shadow transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:pointer-events-none disabled:opacity-50 self-start"
+                                href="/auth/google">
+                                Get Started
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 p-20 ">
+                    <img
+                    alt="Hero"
+                    class="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square w-full"
+                    height="400"
+                    src="/img/placeholder.jpg"
+                    width="400"/>
+                </div>
+            </div>
+        </section>
+        <section class="bg-gray-100 pb-16">
+            <div class=" px-4 md:px-6, pb-16">
+                <div class="flex gap-6">
+                    <div class="flex-1 flex flex-col items-center justify-center space-y-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="h-12 w-12 text-gray-700">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <line x1="21.17" x2="12" y1="8" y2="8"></line>
+                            <line x1="3.95" x2="8.54" y1="6.06" y2="14"></line>
+                            <line x1="10.88" x2="15.46" y1="21.94" y2="14"></line>
+                        </svg>
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-bold text-gray-900">Google Sign Up</h3>
+                            <p class="text-gray-700">
+                                Sign up with your Google account for easy access to your notes.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-center space-y-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="h-12 w-12 text-gray-700">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                            <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+                            <path d="M3 12A9 3 0 0 0 21 12"></path>
+                        </svg>
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-bold text-gray-900">MongoDB Data Save</h3>
+                            <p class="text-gray-700">
+                                Your notes are securely saved to a MongoDB database for reliable storage.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-center space-y-4 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="h-12 w-12 text-gray-700">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-bold text-gray-900">Multilingual Search</h3>
+                            <p class="text-gray-700">
+                                Search your notes in both English and Chinese for maximum convenience.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
 </body>
 </html>

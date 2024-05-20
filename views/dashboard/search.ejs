@@ -6,21 +6,45 @@
     <title>Document</title>
 </head>
 <body>
-    <% if(notes != '') { %>
-        <ul>
-            <% for (var i = 0; i < notes.length; i++) { %>
-                <li>
-                    <a href="/dashboard/notes/<%= notes[i]._id %>">
-                        <%= notes[i].title %>
-                    </a>
-                    <ul>
-                        <li><%= notes[i].body %></li>
-                    </ul>
-                </li>
-            <% } %>
-        </ul>
-    <% } else { %>
-        <p>No items found.</p>
-    <% } %>
-</body>
+    <body class="bg-gray-50 max pt-14 my-8">
+        <div class="container mx-auto max-w-4xl ">
+            <header class="flex items-center justify-between ">
+                <span class="text-2xl font-semibold text-gray-900 pl-2">Search Results...</span>
+                <a class="inline-flex h-10 w-auto items-center justify-center rounded-md border border-black px-8 text-sm font-medium text-black shadow transition-colors hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:pointer-events-none disabled:opacity-50 self-center" href="/dashboard/add">
+                    + New Note
+                </a>
+            </header>
+            <main class="w-full py-12 md:py-24 lg:py-1">
+                <% if (notes.length != '') { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-4xl mx-auto py-3 md:py-6 lg:py-8">
+                        <% notes.forEach(note => { %>
+                            <a href="/dashboard/notes/<%= note._id %>" class="block" style="display: block; height: 100%;">
+                                <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden h-full flex flex-col">
+                                    <div class="p-6 flex-grow flex flex-col">
+                                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">
+                                            <%= note.title %>
+                                        </h2>
+                                        <p class="text-gray-500 dark:text-gray-400 mb-6">
+                                            <%= note.body %>
+                                        </p>
+                                        <div class="flex items-center justify-between mt-auto">
+                                            <div class="flex items-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-gray-500 dark:text-gray-400">
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                                </svg>
+                                                <span class="text-sm text-gray-500 dark:text-gray-400"><%= new Date(note.createdAt).toLocaleDateString() %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </a>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p class="text-center text-gray-500 dark:text-gray-400">No notes yet</p>
+                <% } %>
+            </main>
+        </div>
+    </body>
 </html>

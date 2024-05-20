@@ -1,8 +1,33 @@
-<header>
-    <a href="/dashboard">Home Page</a>
-    <button onclick="location.href='/logout'">Log out</button>
-    <form action="/dashboard/search" method="GET">
-        <input type="text" name="searchTerm" placeholder="Search Notes">
-        <button type="submit">Search</button>
-    </form>
+<header class="px-4 lg:px-6 h-14 flex items-center bg-white border-b border-gray-200 fixed top-0 w-full" >
+    <a class="flex items-center justify-center" href="/">
+        <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-6 w-6 text-gray-500 dark:text-gray-400"
+      >
+        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+        <path d="m15 5 4 4"></path>
+      </svg>
+    </a>
+    <div class="flex-1 flex justify-center px-4 lg:px-6">
+        <form action="/dashboard/search" method="GET" class="flex items-center ">
+            <input type="text" name="searchTerm" placeholder="Search Notes" class="w-96 h-8 px-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </form>
+    </div>
+    <a
+        class="inline-flex h-8 w-auto items-center justify-center rounded-md border border-gray px-8 text-sm font-medium text-black shadow transition-colors hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:pointer-events-none disabled:opacity-50 self-center"
+        href="/logout">
+        Log out
+    </a>
 </header>
+
+
+
+
