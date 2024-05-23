@@ -4,12 +4,12 @@
 A Notion-like application built with Node.js and Express. It provides a platform for note-takig.
 
 ## Features
-- User authentication and authorization
-    ![Google Login](public/img/README-Google_Auth.gif)
-- Create, read, update, and delete notes
-    ![Note CRUD](public/img/README-Note_CRUD.gif)
-- Search functionality
-    ![Search Note](public/img/README-Note_Search.gif)
+### 1. User authentication and authorization
+![Google Login](public/img/README-Google_Auth.gif)
+### 2. Create, read, update, and delete notes
+![Note CRUD](public/img/README-Note_CRUD.gif)
+### 3. Search functionality
+![Search Note](public/img/README-Note_Search.gif)
 
 ## Requirements
 - Node.js >= 14.0.0
