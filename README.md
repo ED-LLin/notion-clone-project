@@ -1,7 +1,7 @@
 # Notion Clone Project
 
 ## Overview
-A Notion-like application built with Node.js and Express. It provides a platform for note-takig.
+A Notion-like application built with Node.js and Express. It provides a platform for note-taking.
 
 ## Features
 ### 1. User authentication and authorization
@@ -63,3 +63,6 @@ A Notion-like application built with Node.js and Express. It provides a platform
    ```
 
 2. Open your browser and navigate to `http://localhost:3000`.
+
+## API Documentation
+This project includes Swagger API documentation. To access the API docs, navigate to `http://localhost:3000/api-docs` in your browser. The documentation provides detailed information on user authentication, note management, and search functionalities.

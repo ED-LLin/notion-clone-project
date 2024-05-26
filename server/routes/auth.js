@@ -38,30 +38,74 @@ async function(accessToken, refreshToken, profile, done) {
 ));
 
 // Google Login
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: 使用 Google 登錄
+ *     tags: [Auth]
+ *     description: 重定向到 Google 登錄頁面。無法在 Swagger UI 中直接測試。
+ *     responses:
+ *       302:
+ *         description: 重定向到 Google 登錄頁面
+ */
 router.get('/auth/google',
   passport.authenticate('google', { scope: ['email', 'profile'] }));
 
+/**
+ * @swagger
+ * /google/callback:
+ *   get:
+ *     summary: Google 登錄回調
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: 認證成功後重定向到儀表板
+ *       401:
+ *         description: 認證失敗，重定向到登錄失敗頁面
+ */
 router.get('/google/callback', 
   passport.authenticate('google', { 
     failureRedirect: '/login-failure' }),
   function(req, res) {
     // Successful authentication, redirect dashboard.
-    res.redirect('/dashboard');
+    res.status(302).redirect('/dashboard');
   });
 
-// Route if something goes wrong
+/**
+ * @swagger
+ * /login-failure:
+ *   get:
+ *     summary: 登錄失敗
+ *     tags: [Auth]
+ *     responses:
+ *       401:
+ *         description: 認證失敗
+ */
 router.get('/login-failure', (req, res) => {
-    res.send('Something went wrong')
+    res.status(401).send('Authentication failed. Please try again.');
 });
 
 // Destroy session
+/**
+ * @swagger
+ * /logout:
+ *   get:
+ *     summary: 用戶登出
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: 成功登出並重定向到首頁
+ *       500:
+ *         description: 登出過程中發生錯誤
+ */
 router.get('/logout', (req, res) => {
     req.session.destroy((error) => {
         if (error) {
             console.log(error);
-            res.send('Error logging out');
+            res.status(500).send('Error logging out');
         } else {
-            res.redirect('/');
+            res.status(302).redirect('/');
         }
     });
 });
@@ -80,4 +124,3 @@ passport.deserializeUser((id, done) => {
 });
 
 module.exports = router;
-
