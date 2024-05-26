@@ -7,6 +7,8 @@ const session = require('express-session');
 const passport = require('passport');
 const MongoStore = require('connect-mongo');
 const methodOverride = require('method-override');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 const app = express()
 const port = process.env.PORT || 3000;
@@ -27,7 +29,26 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 
+// Swagger API Docs
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Notion-Clone-Project API docs',
+      version: '1.0.0',
+      description: '這是 Notion-Clone-Project 的 API 文件，提供了使用者認證、筆記管理和搜尋功能的詳細說明。',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+      },
+    ],
+  },
+  apis: ['./server/routes/*.js', './server/controllers/*.js'], // Added controllers folder
+};
 
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Static Files
 app.use(express.static('public'));
