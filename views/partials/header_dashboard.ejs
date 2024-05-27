@@ -21,13 +21,13 @@
             <input type="text" name="searchTerm" placeholder="Search Notes" class="w-96 h-8 px-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </form>
     </div>
+    <form id="logoutForm" action="/logout" method="POST" style="display: none;">
+        <input type="hidden" name="_method" value="POST">
+    </form>
     <a
         class="inline-flex h-8 w-auto items-center justify-center rounded-md border border-gray px-8 text-sm font-medium text-black shadow transition-colors hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:pointer-events-none disabled:opacity-50 self-center"
-        href="/logout">
+        href="#" onclick="document.getElementById('logoutForm').submit();">
         Log out
     </a>
 </header>
-
-
-
 

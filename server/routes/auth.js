@@ -50,7 +50,7 @@ async function(accessToken, refreshToken, profile, done) {
  *         description: 重定向到 Google 登錄頁面
  */
 router.get('/auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] }));
+  passport.authenticate('google', { scope: ['email', 'profile'], prompt: 'select_account' }));
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.get('/login-failure', (req, res) => {
 /**
  * @swagger
  * /logout:
- *   get:
+ *   post:
  *     summary: 用戶登出
  *     tags: [Auth]
  *     responses:
@@ -99,7 +99,7 @@ router.get('/login-failure', (req, res) => {
  *       500:
  *         description: 登出過程中發生錯誤
  */
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
     req.session.destroy((error) => {
         if (error) {
             console.log(error);

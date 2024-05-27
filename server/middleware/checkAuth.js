@@ -4,4 +4,4 @@ exports.isLoggedIn = function (req, res, next) {
     } else {
         return res.status(401).send('Log in to view notes.');
     }
-}
+};
