@@ -65,7 +65,7 @@ app.use('/', require('./server/routes/dashboard'));
 app.use('/', require('./server/routes/index'));
 
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on port ${port}`)
 })
 
