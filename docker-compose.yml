@@ -7,12 +7,20 @@ services:
     env_file:
       - .env
     depends_on:
+      - redis
       - mongodb
     environment:
+      - REDIS_URL=redis://redis:6379
       - MONGODB_URI=mongodb://mongodb:27017/notion-clone-db
 
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
   mongodb:
-    image: mongo
+    image: "mongo:latest"
     ports:
       - "27017:27017"
     volumes:

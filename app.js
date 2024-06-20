@@ -9,6 +9,7 @@ const MongoStore = require('connect-mongo');
 const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
+const redisClient = require('./server/config/redisClient');
 
 const app = express()
 const port = process.env.PORT || 3000;
@@ -63,7 +64,7 @@ app.set('layout', './layouts/main')
 app.use('/', require('./server/routes/auth'));
 app.use('/', require('./server/routes/dashboard'));
 app.use('/', require('./server/routes/index'));
-
+app.use('/', require('./server/routes/redis'));
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on port ${port}`)
