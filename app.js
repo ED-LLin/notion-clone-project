@@ -10,9 +10,22 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const redisClient = require('./server/config/redisClient');
+const rateLimiter = require('./server/middleware/rateLimiter');
+const blacklistChecker = require('./server/middleware/blacklistChecker');
 
 const app = express()
 const port = process.env.PORT || 3000;
+
+// 檢查 ip 是否為黑名單
+app.use(blacklistChecker);
+
+// 用 rate limiter 限制流量
+app.use(rateLimiter);
+
+// 測試路由
+app.get('/test', (req, res) => {
+  res.send('This is a test route.');
+});
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
