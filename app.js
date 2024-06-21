@@ -22,9 +22,9 @@ app.use(blacklistChecker);
 // 用 rate limiter 限制流量
 app.use(rateLimiter);
 
-// 測試路由
+// 簡單的 test router
 app.get('/test', (req, res) => {
-  res.send('This is a test route.');
+    res.send('測試路由 ');
 });
 
 app.use(session({
