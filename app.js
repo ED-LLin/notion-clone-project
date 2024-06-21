@@ -22,11 +22,6 @@ app.use(blacklistChecker);
 // 用 rate limiter 限制流量
 app.use(rateLimiter);
 
-// 測試路由
-app.get('/test', (req, res) => {
-  res.send('This is a test route.');
-});
-
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,

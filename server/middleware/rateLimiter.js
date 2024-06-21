@@ -8,9 +8,14 @@ const limiter = rateLimit({
   }),
   windowMs: 10 * 1000, // 10 秒
   max: 3, // 每 10 秒最多 3 次請求
-  handler: (req, res) => {
+  handler: async (req, res) => {
     const ip = req.ip;
-    redisClient.set(`blacklist:${ip}`, '1', 'EX', 10 * 60); // 鎖 10 分鐘
+    try {
+      await redisClient.set(`blacklist:${ip}`, '1', { EX: 10 }); // 鎖 10 秒鐘
+      console.log(`IP ${ip} has been blacklisted for 10 seconds.`);
+    } catch (err) {
+      console.error('Failed to set blacklist:', err);
+    }
     res.status(429).send('Too many requests, please try again later.');
   },
 });
