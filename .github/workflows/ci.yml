@@ -15,10 +15,10 @@ jobs: # 工作
 
     steps: # 步驟
       - name: Checkout code # 檢出代碼
-        uses: actions/checkout@v4 # 使用 actions/checkout@v3
+        uses: actions/checkout@v4 # 使用 actions/checkout@v4
 
       - name: Set up Docker Buildx # 設置 Docker Buildx
-        uses: docker/setup-buildx-action@v2 # 使用 docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3 # 使用 docker/setup-buildx-action@v3
 
       - name: Cache Docker layers # 緩存 Docker 層
         uses: actions/cache@v3 # 使用 actions/cache@v3
