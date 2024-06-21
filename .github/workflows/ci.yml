@@ -43,6 +43,8 @@ jobs: # 工作
 
       - name: Deploy to server # 部署到伺服器
         run: |
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@3.106.165.149 "docker pull ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest && cd /path/to/docker-compose-directory && docker-compose up -d" # 使用 SSH 部署
+          echo "Starting deployment..."
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@3.106.165.149 "docker pull ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest && cd /path/to/docker-compose-directory && docker-compose up -d" # 使用 SSH 部署
+          echo "Deployment finished."
         env: # 環境變量
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
