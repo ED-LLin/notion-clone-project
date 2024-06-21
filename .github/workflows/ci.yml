@@ -1,0 +1,49 @@
+name: CI/CD Pipeline # CI/CD 管道名稱
+
+on: # 觸發條件
+  push: # 當推送到以下分支時觸發
+    branches:
+      - main # 主分支
+      - setup-ci-cd # 設置 CI/CD 的分支
+  pull_request: # 當拉取請求到以下分支時觸發
+    branches:
+      - main # 主分支
+
+jobs: # 工作
+  build: # 建構工作
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 上運行
+
+    steps: # 步驟
+      - name: Checkout code # 檢出代碼
+        uses: actions/checkout@v2 # 使用 actions/checkout@v2
+
+      - name: Set up Docker Buildx # 設置 Docker Buildx
+        uses: docker/setup-buildx-action@v1 # 使用 docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers # 緩存 Docker 層
+        uses: actions/cache@v2 # 使用 actions/cache@v2
+        with: # 配置
+          path: /tmp/.buildx-cache # 緩存路徑
+          key: ${{ runner.os }}-buildx-${{ github.sha }} # 緩存鍵
+          restore-keys: |
+            ${{ runner.os }}-buildx- # 恢復鍵
+
+      - name: Log in to Docker Hub # 登錄到 Docker Hub
+        uses: docker/login-action@v1 # 使用 docker/login-action@v1
+        with: # 配置
+          username: ${{ secrets.DOCKER_USERNAME }} # Docker Hub 用戶名
+          password: ${{ secrets.DOCKER_PASSWORD }} # Docker Hub 密碼
+
+      - name: Build and push Docker image # 構建並推送 Docker 映像
+        uses: docker/build-push-action@v2 # 使用 docker/build-push-action@v2
+        with: # 配置
+          context: . # 上下文目錄
+          push: true # 推送到 Docker Hub
+          tags: ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest # 標籤
+
+      - name: Deploy to server # 部署到伺服器
+        run: |
+          ssh  ubuntu@3.106.165.149 "docker pull ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest && docker-compose up -d" # 使用 SSH 部署
+        env: # 環境變量
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
+
