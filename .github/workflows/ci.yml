@@ -44,7 +44,7 @@ jobs: # 工作
         with: # 配置
           context: . # 上下文目錄
           push: true # 推送到 Docker Hub
-          tags: ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest # 標籤
+          tags: ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest 
 
       - name: Set up SSH key # 設置 SSH 金鑰
         run: |
