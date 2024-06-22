@@ -46,20 +46,21 @@ jobs: # 工作
           push: true # 推送到 Docker Hub
           tags: ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest # 標籤
 
+      - name: Set up SSH key # 設置 SSH 金鑰
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa_notion_clone
+          chmod 600 ~/.ssh/id_rsa_notion_clone
+
       - name: Test SSH connection # 測試 SSH 連接
         run: |
-          echo "Testing SSH connection..."
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa_notion_clone
-          chmod 600 id_rsa_notion_clone
-          ssh -i id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@3.106.165.149 "echo 'SSH connection successful'"
+          ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@3.106.165.149 "echo 'SSH connection successful'"
           echo "SSH connection test finished."
-        env: # 環境變量
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
 
       - name: Deploy to server # 部署到伺服器
         run: |
           echo "Starting deployment..."
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@3.106.165.149 "
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@3.106.165.149 "
             echo 'Pulling latest Docker image...'
             docker pull ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest &&
             echo 'Navigating to project directory...'
