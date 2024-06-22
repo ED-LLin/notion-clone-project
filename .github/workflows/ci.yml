@@ -49,7 +49,9 @@ jobs: # 工作
       - name: Test SSH connection # 測試 SSH 連接
         run: |
           echo "Testing SSH connection..."
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@3.106.165.149 "echo 'SSH connection successful'"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@3.106.165.149 "echo 'SSH connection successful'"
           echo "SSH connection test finished."
         env: # 環境變量
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
