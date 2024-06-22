@@ -60,14 +60,16 @@ jobs: # 工作
       - name: Deploy to server # 部署到伺服器
         run: |
           echo "Starting deployment..."
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@3.106.165.149 "
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa_notion_clone
+          chmod 600 ~/.ssh/id_rsa_notion_clone
+          ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@3.106.165.149 "
             echo 'Pulling latest Docker image...'
             docker pull ${{ secrets.DOCKER_USERNAME }}/notion-clone:latest &&
             echo 'Navigating to project directory...'
             cd ~/notion-clone-project &&
             echo 'Starting Docker Compose...'
             docker-compose up -d
-          " # 使用 SSH 部署
+          "
           echo "Deployment finished."
         env: # 環境變量
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
