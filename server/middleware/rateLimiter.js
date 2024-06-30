@@ -6,8 +6,8 @@ const limiter = rateLimit({
   store: new RedisStore({
     sendCommand: (...args) => redisClient.sendCommand(args),
   }),
-  windowMs: 10 * 1000, // 10 秒
-  max: 3, // 每 10 秒最多 3 次請求
+  windowMs: 10 * 1000, 
+  max: 50, 
   handler: async (req, res) => {
     const ip = req.ip;
     try {
