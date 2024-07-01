@@ -14,7 +14,7 @@ class DiscordWebhook extends Transport {
 
   async log(info, callback) {
     if (this.silent || !this.levels[info.level] || this.levels[info.level] < this.levels[this.level]) {
-      console.log(`日誌被忽略：${info.level} - ${info.message}`); // 添加調試信息
+      console.log(`log is not sent to Discord：${info.level} - ${info.message}`); // 添加調試信息
       return callback();
     }
 
@@ -34,7 +34,7 @@ class DiscordWebhook extends Transport {
           timestamp: new Date(timestamp).toISOString()
         }]
       });
-      console.log(`日誌發送成功：${level} - ${message}`); // 添加調試信息
+      console.log(`log is sent to Discord：${level} - ${message}`); // 添加調試信息
     } catch (error) {
       console.error('Error sending log to Discord:', error);
     }
