@@ -55,11 +55,12 @@ app.set('view engine', 'ejs');
 app.set('layout', './layouts/main')
 
 // Routes
-app.use('/', require('./server/routes/auth'));
+app.use('/api-docs', require('./server/routes/swagger'));
 app.use('/dashboard', require('./server/routes/dashboard'));
+app.use('/fetch-content', require('./server/routes/fetchContent'));
+app.use('/', require('./server/routes/auth'));
 app.use('/', require('./server/routes/index'));
 app.use('/', require('./server/routes/redis'));
-app.use('/api-docs', require('./server/routes/swagger'));
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on port ${port}`)

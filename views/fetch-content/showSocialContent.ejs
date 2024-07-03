@@ -1,0 +1,21 @@
+<div class="container mx-auto py-6 md:py-6 lg:py-8">
+    <% if (socialData.length > 0) { %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-4xl mx-auto py-3 md:py-6 lg:py-8">
+            <% socialData.forEach(data => { %>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><%= data.title || data.textContent %></h2>
+                    
+                    <% if(data.images && data.images.length > 0) { %>
+                        <div class="grid grid-cols-2 gap-4">
+                            <% data.images.forEach(image => { %>
+                                <img src="<%= image %>" alt="Image" class="w-full h-auto">
+                            <% }) %>
+                        </div>
+                    <% } %>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <p class="text-center text-gray-500 dark:text-gray-400">No social content available</p>
+    <% } %>
+</div>

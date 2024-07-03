@@ -1,0 +1,32 @@
+<div class="container mx-auto py-6 md:py-6 lg:py-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+        <h2 class="text-xl font-bold text-gray-900 mb-4"><%= submittedSocialData.title %></h2>
+        
+        <% if(submittedSocialData.textContent) { %>
+            <p class="text-gray-700 mb-4"><%= submittedSocialData.textContent %></p>
+        <% } %>
+
+        <% if(submittedSocialData.images && submittedSocialData.images.length > 0) { %>
+            <div class="grid grid-cols-2 gap-4">
+                <% submittedSocialData.images.forEach(image => { %>
+                    <img src="<%= image %>" alt="Image" class="w-full h-auto">
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if(submittedSocialData.videos && submittedSocialData.videos.length > 0) { %>
+            <div class="grid grid-cols-2 gap-4">
+                <% submittedSocialData.videos.forEach(video => { %>
+                    <video controls class="w-full">
+                        <source src="<%= video %>" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if(submittedSocialData.url) { %>
+            <a href="<%= submittedSocialData.url %>" class="text-blue-500 hover:underline" target="_blank">View More</a>
+        <% } %>
+    </div>
+</div>
