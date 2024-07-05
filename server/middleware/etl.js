@@ -4,7 +4,7 @@ const { loadData } = require('../etl/load');
 
 exports.etl = async (req, res, next) => {
     const socialUrl = req.body.socialUrl;
-    const platform = req.platform;
+    const platform = req.body.platform;
     
     try {
         // 提取資料
@@ -20,7 +20,7 @@ exports.etl = async (req, res, next) => {
         console.log(`ETL loaded`)
 
         // 將結果存儲在 req 對象中
-        req.savedData = savedData;
+        req.body.savedData = savedData;
 
         // 調用 next() 將控制權交給下一個中間件
         next();

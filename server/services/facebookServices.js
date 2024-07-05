@@ -15,7 +15,7 @@ exports.fetchFacebookData = async (socialUrl) => {
 
     try {
         const response = await axios.request(options);
-        console.log(`response FB data: ${response.data}`);
+        console.log(`response FB data: ${JSON.stringify(response.data, null, 2)}`);
         return response.data;
         
     } catch (error) {
