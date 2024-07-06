@@ -14,45 +14,51 @@
                 <div class="flex-1 p-20">
                     <div class="flex flex-col space-y-4 w-full justify-center">
                         <div class="space-y-2 w-full">
-                            <h1 class="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl text-gray-900">
-                                Enter Your Social URL
-                            </h1>
-                            <p class="text-gray-700 md:text-sm pt-2">
-                                Please provide the URL of your social media profile.
-                            </p>
-                        </div>
-                        <div class="flex flex-col gap-2 min-[400px]:flex-row">
-                            <form action="/fetch-content/submit-url" method="POST" class="w-full">
-                                <div class="mb-4">
-                                    <label for="socialUrl" class="block text-sm font-medium text-gray-700">Social URL:</label>
-                                    <input type="url" id="socialUrl" name="socialUrl" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"/>
-                                </div>
-                                <button type="submit" class="inline-flex h-10 w-auto items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-white shadow transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:pointer-events-none disabled:opacity-50 self-start">
-                                    Submit
-                                </button>
-                            </form>
-                        </div>
-                        <% if (socialData.length > 0) { %>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-4xl mx-auto py-3 md:py-6 lg:py-8">
-                                <% socialData.forEach(data => { %>
-                                    <a href="/fetch-content/saved-content/<%= data._id %>" class="block">
-                                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                                            <h2 class="text-xl font-bold text-gray-900 mb-4"><%= data.title || data.textContent %></h2>
-                                            
-                                            <% if(data.images && data.images.length > 0) { %>
-                                                <div class="grid grid-cols-2 gap-4">
-                                                    <% data.images.forEach(image => { %>
-                                                        <img src="<%= image %>" alt="Image" class="w-full h-auto">
-                                                    <% }) %>
-                                                </div>
-                                            <% } %>
-                                        </div>
-                                    </a>
-                                <% }) %>
+                            <div class="space-y-2 w-full">
+                                <h2 class="text-2xl font-bold text-black pt-2">
+                                    Please provide the URL of your social media profile.
+                                </h2>
                             </div>
-                        <% } else { %>
-                            <p class="text-center text-gray-500 dark:text-gray-400">No social content available</p>
-                        <% } %>
+                            <div class="flex flex-col gap-2 min-[400px]:flex-row">
+                                <form action="/fetch-content/submit-url" method="POST" class="w-full">
+                                    <div class="mb-4">
+                                        <label for="socialUrl" class="block text-sm font-medium text-gray-700">Social URL:</label>
+                                        <input type="url" id="socialUrl" name="socialUrl" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"/>
+                                    </div>
+                                    <button type="submit" class="inline-flex h-10 w-auto items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-white shadow transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:pointer-events-none disabled:opacity-50 self-start">
+                                        Submit
+                                    </button>
+                                </form>
+                            </div>
+                            <% if (socialData.length > 0) { %>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-4xl mx-auto py-3 md:py-6 lg:py-8">
+                                    <% socialData.forEach(data => { %>
+                                        <a href="/fetch-content/saved-content/<%= data._id %>" class="block">
+                                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                                                <% if(data.images && data.images.length > 0) { %>
+                                                    <div class="grid grid-cols-1 gap-4">
+                                                        <% data.images.forEach(image => { %>
+                                                            <img src="<%= image %>" alt="Image" class="w-full h-auto">
+                                                        <% }) %>
+                                                    </div>
+                                                <% } %>
+                                                <p class="text-sm font-bold text-black mt-2">
+                                                    <%= (data.title || data.textContent).length > 24 ? (data.title || data.textContent).substring(0, 24) + '...' : (data.title || data.textContent) %>
+                                                </p>
+                                                <% if(data.aiTags && data.aiTags.length > 0) { %>
+                                                    <div class="mt-2">
+                                                        <% data.aiTags.forEach(tag => { %>
+                                                            <span class="text-sm text-gray-600 dark:text-gray-400">#<%= tag %></span>
+                                                        <% }) %>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </a>
+                                    <% }) %>
+                                </div>
+                            <% } else { %>
+                                <p class="text-center text-gray-500 dark:text-gray-400">No social content available</p>
+                            <% } %>
                     </div>
                 </div>
             </div>

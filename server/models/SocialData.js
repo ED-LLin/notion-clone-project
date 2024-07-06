@@ -22,6 +22,10 @@ const SocialDataSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    aiTags: [{
+        type: String,
+        required: false
+    }],
     images: [{
         type: String,
         required: false

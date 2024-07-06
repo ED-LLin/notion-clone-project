@@ -1,9 +1,12 @@
-<div class="container mx-auto py-6 md:py-6 lg:py-8">
+<div class="container mx-auto py-6 md:py-6 lg:py-8" style="padding-top: 5rem;">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 max-w-2xl mx-auto">
         <h2 class="text-xl font-bold text-gray-900 mb-4"><%= socialContent.title %></h2>
-        
-        <% if(socialContent.textContent) { %>
-            <p class="text-gray-700 mb-4"><%= socialContent.textContent %></p>
+        <% if(socialContent.aiTags && socialContent.aiTags.length > 0) { %>
+            <div class="mt-2">
+                <% socialContent.aiTags.forEach(tag => { %>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">#<%= tag %></span>
+                <% }) %>
+            </div>
         <% } %>
 
         <% if(socialContent.images && socialContent.images.length > 0) { %>
@@ -25,12 +28,14 @@
             </div>
         <% } %>
 
+
+
         <% if(socialContent.url) { %>
             <div class="mt-4">
                 <% if(socialContent.platform === 'instagram') { %>
-                    <blockquote class="instagram-media" data-instgrm-permalink="<%= socialContent.url %>&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
+                    <blockquote class="instagram-media" data-instgrm-permalink=" <%= socialContent.url %>&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
                         <div style="padding:16px;">
-                           <a href="https://www.instagram.com/p/C9AG03DPQpv/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
+                           <a href="https://www.instagram.com/p/C9CtiGRvDHe/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
                               <div style=" display: flex; flex-direction: row; align-items: center;">
                                  <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div>
                                  <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;">
@@ -75,9 +80,9 @@
                                  <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div>
                               </div>
                            </a>
-                           <p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/p/C9AG03DPQpv/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">陌陌古物商行（@moomoo_goodies）分享的貼文</a></p>
                         </div>
                      </blockquote>
+                     <script async src="//www.instagram.com/embed.js"></script>
                 <% } else if(socialContent.platform === 'youtube') { 
                     let embedUrl = socialContent.url.replace(/(www\.youtube\.com\/|youtu\.be\/)/, 'www.youtube.com/embed/');
                 %>
@@ -88,6 +93,12 @@
             </div>
         <% } %>
 
-         <script async src="//www.instagram.com/embed.js"></script>
+        <% if(socialContent.textContent) { %>
+            <p class="text-gray-700 mb-4"><%- socialContent.textContent.replace(/\n/g, '<br>') %></p>
+        <% } %>
+
+        
     </div>
+    <div style="padding-bottom: 5rem;"></div>
 </div>
+
