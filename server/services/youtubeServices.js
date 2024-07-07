@@ -15,7 +15,7 @@ exports.fetchYouTubeData = async (socialUrl) => {
 
     try {
         const response = await axios.request(options);
-        console.log(`YouTube data gotten ${JSON.stringify(response.data)}`);
+        console.log(`YouTube data gotten`);
         return response.data;
 
     } catch (error) {

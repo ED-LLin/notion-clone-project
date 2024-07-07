@@ -1,11 +1,17 @@
 const { default: mongoose } = require('mongoose');
 const SocialData = require('../models/SocialData');
+const User = require('../models/User');
 
 exports.socialContentForm = async(req, res) => {
     try {
-        const socialData = await SocialData.find().sort({ createdAt: -1 });
+        const user = await User.findById(req.user.id);
+        const socialData = await SocialData.aggregate([
+            { $match: { userId: new mongoose.Types.ObjectId(req.user.id) } },
+            { $sort: { createdAt: -1 } }
+        ]);
         res.status(200).render('fetch-content/social-content', {
             layout: '../views/layouts/main',
+            user,
             socialData // 確保變量名稱一致
         });
     } catch (error) {
@@ -27,7 +33,7 @@ exports.viewSocialContent = async(req, res) => {
             return res.status(404).send("Content not found or failed to fetch");
         }
 
-        const socialContent = await SocialData.findById(socialContentId).lean();
+        const socialContent = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
     
         if (socialContent) {
             res.status(200).render('./fetch-content/view-content', {

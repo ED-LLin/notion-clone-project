@@ -30,6 +30,6 @@ exports.singleTurnConversationJsonFormat = async function(messages) {
             console.log('Unknown finish reason.');
     }
 
-    console.log(`response by AI: ${JSON.stringify(completion, null, 2)}`);
+    // console.log(`response by AI: ${JSON.stringify(completion, null, 2)}`);
     return completion;
 }

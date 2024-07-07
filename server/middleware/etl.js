@@ -5,15 +5,19 @@ const { loadData } = require('../etl/load');
 exports.etl = async (req, res, next) => {
     const socialUrl = req.body.socialUrl;
     const platform = req.body.platform;
+    const userId = req.user.id;
     
+    console.log(userId);
+
     try {
         // 提取資料
         const extractedData = await extractData(socialUrl, platform);
         console.log(`ETL extracted`);
         
         // 轉換資料
-        const transformedData = await transformData(socialUrl, platform, extractedData);
+        const transformedData = await transformData(socialUrl, platform, extractedData, userId);
         console.log(`ETL transformed`);
+        console.log(`Transrormed data's user:`, transformedData.user);
 
         // 加載資料
         const savedData = await loadData(transformedData);

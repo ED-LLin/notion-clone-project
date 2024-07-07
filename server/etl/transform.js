@@ -1,9 +1,10 @@
 const { singleTurnConversationJsonFormat } = require("../services/openAIServices");
 require('dotenv').config({ path: '../../.env' });
 
-exports.transformData = async (socialUrl, platform, extractedData) => {
+exports.transformData = async (socialUrl, platform, extractedData, userId) => {
     let transformedData = {};
 
+    // 取出社群資料
     if (platform === 'instagram') {
         transformedData = {
             platform: 'instagram',
@@ -60,6 +61,9 @@ exports.transformData = async (socialUrl, platform, extractedData) => {
             ] : []
         };
     }
+    // 在資料中加入 user ID
+    transformedData.user = userId;
+    console.log('transform set user to:', transformedData.user);
 
     // 增加 AI 標籤
     const titleAndTextContent = transformedData.title + transformedData.textContent;
@@ -78,7 +82,7 @@ exports.transformData = async (socialUrl, platform, extractedData) => {
         throw error;
     }
 
-    console.log(`transform.js transformed `);
+    console.log(`transformed:`, JSON.stringify(transformedData, null, 2));
     return transformedData;
 };
 

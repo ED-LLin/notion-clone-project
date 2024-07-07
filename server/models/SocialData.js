@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const SocialDataSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
     platform: {
         type: String,
         required: false,
