@@ -10,6 +10,10 @@ COPY package*.json ./
 # 安裝依賴
 RUN npm install
 
+# 複製補丁文件並應用補丁
+COPY patches ./patches
+RUN npx patch-package
+
 # 複製應用程式碼
 COPY . .
 

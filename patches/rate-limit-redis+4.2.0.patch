@@ -1,0 +1,20 @@
+diff --git a/node_modules/rate-limit-redis/dist/index.cjs b/node_modules/rate-limit-redis/dist/index.cjs
+index d0a1dfa..049f03f 100755
+--- a/node_modules/rate-limit-redis/dist/index.cjs
++++ b/node_modules/rate-limit-redis/dist/index.cjs
+@@ -13,13 +13,13 @@ const scripts = {
+       end
+ 
+       return { totalHits, timeToExpire }
+-		`.replaceAll(/^\s+/gm, "").trim(),
++		`.replace(/^\s+/gm, "").trim(),
+   get: `
+       local totalHits = redis.call("GET", KEYS[1])
+       local timeToExpire = redis.call("PTTL", KEYS[1])
+ 
+       return { totalHits, timeToExpire }
+-		`.replaceAll(/^\s+/gm, "").trim()
++		`.replace(/^\s+/gm, "").trim()
+ };
+ 
+ const toInt = (input) => {
