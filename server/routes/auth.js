@@ -20,6 +20,7 @@ async function(accessToken, refreshToken, profile, done) {
     }
 
     try {
+        // 使用 googleID 查找現有的使用者
         let user = await User.findOne({ googleID: profile.id });
 
         if (user) {
@@ -30,8 +31,13 @@ async function(accessToken, refreshToken, profile, done) {
         }
 
     } catch (error) {
-        console.log(error);
-        done(error);  // 確保在捕捉到錯誤時調用 done
+        if (error.code === 11000) {  // 捕捉重複鍵錯誤
+            let user = await User.findOne({ googleID: profile.id });
+            done(null, user);
+        } else {
+            console.log(error);
+            done(error);  // 確保在捕捉到錯誤時調用 done
+        }
     }
 
   }

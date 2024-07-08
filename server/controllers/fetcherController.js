@@ -4,15 +4,16 @@ const User = require('../models/User');
 
 exports.socialContentForm = async(req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user);
+        console.log('user through fetcherControllser is:', req.user._id);
         const socialData = await SocialData.aggregate([
-            { $match: { userId: new mongoose.Types.ObjectId(req.user.id) } },
+            { $match: { user: new mongoose.Types.ObjectId(req.user._id) } }, 
             { $sort: { createdAt: -1 } }
         ]);
         res.status(200).render('fetch-content/social-content', {
             layout: '../views/layouts/main',
             user,
-            socialData // 確保變量名稱一致
+            socialData
         });
     } catch (error) {
         console.log(error);
