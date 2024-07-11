@@ -27,3 +27,9 @@ exports.homepage = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 }
+
+exports.privacyPolicyPage = async (req, res) => {
+    res.render('privacy-policy', {
+        layouts: '../views/layouts/main'
+    })
+}
