@@ -5,7 +5,7 @@ const User = require('../models/User');
 exports.socialContentForm = async(req, res) => {
     try {
         const user = await User.findById(req.user);
-        console.log('user through fetcherControllser is:', req.user._id);
+        // console.log('user through fetcherControllser is:', req.user._id);
         const socialData = await SocialData.aggregate([
             { $match: { user: new mongoose.Types.ObjectId(req.user._id) } }, 
             { $sort: { createdAt: -1 } }

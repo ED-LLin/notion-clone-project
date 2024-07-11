@@ -3,10 +3,10 @@ exports.addPlatformToRequest = (req, res, next) => {
 
     if(socialUrl.includes('youtube.com') || socialUrl.includes('youtu.be')) {
         req.body.platform = 'youtube';
-        console.log(`addPlatformToRequest.js add platform to ${req.platform}`);
+        console.log(`addPlatformToRequest.js add platform to ${req.body.platform}`);
     } else if (socialUrl.includes('instagram.com')) {
         req.body.platform = 'instagram';
-        console.log(`addPlatformToRequest.js add platform to ${req.platform}`);
+        console.log(`addPlatformToRequest.js add platform to ${req.body.platform}`);
     // } else if (socialUrl.includes('facebook.com')) {
     //     req.body.platform = 'facebook';
     //     console.log(`addPlatformToRequest.js add platform to ${req.platform}`);

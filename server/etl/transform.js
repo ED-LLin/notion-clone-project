@@ -82,7 +82,7 @@ exports.transformData = async (socialUrl, platform, extractedData, userId) => {
         throw error;
     }
 
-    console.log(`transformed:`, JSON.stringify(transformedData, null, 2));
+    console.log(`transformed.js is transformed`);
     return transformedData;
 };
 
