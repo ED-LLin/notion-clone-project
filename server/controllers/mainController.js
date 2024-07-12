@@ -17,8 +17,8 @@
 exports.homepage = async (req, res) => {
     try {
         const locals = {
-            title: "Notion Clone",
-            description: "Created by NodeJS"
+            title: "Laiter",
+            description: "Note with social content"
         };
 
         res.status(200).render('index', locals);
