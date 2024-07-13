@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Note = require('../models/Note');
 const User = require('../models/User');
 const { search } = require('../routes');
+const SocialData = require('../models/SocialData');
 
 /**
  * @swagger
@@ -28,11 +29,16 @@ exports.dashboard = async(req, res) => {
             {$match: {user: new mongoose.Types.ObjectId(req.user.id)}},
             {$sort: {createdAt: -1}}
         ]);
+        const socialData = await SocialData.aggregate([
+            { $match: {user: new mongoose.Types.ObjectId(req.user._id)}},
+            { $sort: {createdAt: -1}}
+        ]);
 
         res.status(200).render('dashboard/index', {
             layout: '../views/layouts/dashboard',
             user,
-            notes
+            notes,
+            socialData
         });
     } catch (error) {
         console.log(error);
