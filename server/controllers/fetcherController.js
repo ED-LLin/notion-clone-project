@@ -52,16 +52,29 @@ exports.viewSocialContent = async(req, res) => {
     }
 }
 
-// exports.viewContent = async(req, res) => {
-//     try {
-//         const socialData = await SocialData.find();
-//         res.status(200).render('fetch-content/showSocialContent', {
-//             layout: '../views/layouts/main',
-//             socialData // 確保變量名稱一致
-//         });
-//         console.log(`Controller get socialData: ${socialData}`);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// };
+exports.deleteSocialContent = async (req, res) => {
+    try {
+        const socialContentId = req.params.id;
+
+        if (!mongoose.Types.ObjectId.isValid(socialContentId)) {
+            return res.status(404).send("Content not found or failed to delete");
+        }
+
+        const socialContent = await SocialData.findById(socialContentId);
+
+        if (!socialContent) {
+            return res.status(404).send("Content not found");
+        }
+
+        if (socialContent.user.toString() !== req.user._id.toString()) {
+            return res.status(403).send("No permission to delete this content");
+        }
+
+        await SocialData.findByIdAndDelete(socialContentId);
+
+        res.status(302).redirect('/dashboard');
+    } catch (error) {
+        console.log("delete socialContent error: ", error);
+        res.status(500).send("Server Error");
+    }
+}
