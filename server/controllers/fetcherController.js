@@ -11,7 +11,7 @@ exports.socialContentForm = async(req, res) => {
             { $sort: { createdAt: -1 } }
         ]);
         res.status(200).render('fetch-content/social-content', {
-            layout: '../views/layouts/main',
+            layout: '../views/layouts/dashboard',
             user,
             socialData
         });
@@ -40,7 +40,7 @@ exports.viewSocialContent = async(req, res) => {
             res.status(200).render('./fetch-content/view-content', {
                 socialContentId: socialContentId,
                 socialContent,
-                layout: '../views/layouts/main'
+                layout: '../views/layouts/dashboard'
             });
         } else {
             res.status(404).send("Content not found or no permission");
