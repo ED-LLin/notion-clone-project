@@ -1,6 +1,8 @@
 const { default: mongoose } = require('mongoose');
 const SocialData = require('../models/SocialData');
 const User = require('../models/User');
+const { loadData } = require('../etl/load');
+const redisClient = require('../config/redisClient');
 
 exports.socialContentForm = async(req, res) => {
     try {
@@ -22,33 +24,59 @@ exports.socialContentForm = async(req, res) => {
 };
 
 exports.socialContentSubmit = async(req, res) => {
-    const submittedSocialData = req.body.savedData;
-    res.status(302).redirect(`/fetch-content/saved-content/${submittedSocialData._id.toString()}`)
+    
+    if (req.body.cachedSocialData && req.body.cachedSocialData.tempCacheId) {
+        const tempCacheId = req.body.cachedSocialData.tempCacheId;
+        res.status(302).redirect(`/fetch-content/saved-content/tempId:${tempCacheId}`);
+        try {
+            await loadData(req.body.cachedSocialData);
+        } catch (error) {
+            console.log('failed to load cache content to MongoDB', error);
+        }
+    } else if (req.body.savedData && req.body.savedData._id) {
+        res.status(302).redirect(`/fetch-content/saved-content/${req.body.savedData._id.toString()}`);
+    } else {
+        res.status(400).send('Invalid request data');
+    }
 };
 
 exports.viewSocialContent = async(req, res) => {
     try {
+        let socialContent;
         const socialContentId = req.params.id;
 
-        if (!mongoose.Types.ObjectId.isValid(socialContentId)) {
-            return res.status(404).send("Content not found or failed to fetch");
+        if (socialContentId.includes("tempId:")) {
+            const tempId = socialContentId.split("tempId:")[1];
+            // Get data from Cache
+            try {
+                socialContent = await redisClient.get(tempId);
+                if (!socialContent) {
+                    return res.status(404).send('Cache data does not exist or has expired');
+                }
+                socialContent = JSON.parse(socialContent);
+            } catch (error) {
+                console.log('Cache data expired or lost');
+                return res.status(404).send('Failed to retrieve cache data');
+            }
+        } else {
+            if (!mongoose.Types.ObjectId.isValid(socialContentId)) {
+                return res.status(404).send('Content not found in database');
+            }
+
+            socialContent = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
+            if (!socialContent) {
+                return res.status(404).send('Content not found or no permission');
+            }
         }
 
-        const socialContent = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
-    
-        if (socialContent) {
-            res.status(200).render('./fetch-content/view-content', {
-                socialContentId: socialContentId,
-                socialContent,
-                layout: '../views/layouts/dashboard'
-            });
-        } else {
-            res.status(404).send("Content not found or no permission");
-        }
-    
+        res.status(200).render('./fetch-content/view-content', {
+            socialContentId,
+            socialContent,
+            layout: '../views/layouts/dashboard'
+        });
     } catch (error) {
-        console.log("view socialContent error: ", error);
-        res.status(500).send("Server Error");
+        console.error("Error viewing social content:", error);
+        res.status(500).send("Server error");
     }
 }
 
