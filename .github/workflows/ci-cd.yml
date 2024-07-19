@@ -27,6 +27,8 @@ jobs: # 工作
       - name: Start test containers # 啟動測試容器
         run: |
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
+            echo 'Navigating to project directory...'
+            cd ~/notion-clone-project &&
             echo 'Starting test containers...'
             sudo docker-compose -f docker-compose.test.yml up -d
           "
@@ -34,6 +36,8 @@ jobs: # 工作
       - name: Wait for containers and run tests # 等待容器啟動並運行測試
         run: |
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
+            echo 'Navigating to project directory...'
+            cd ~/notion-clone-project &&
             echo 'Waiting for containers to start...'
             sleep 20 &&
             echo 'Running tests...'
@@ -43,6 +47,8 @@ jobs: # 工作
       - name: Stop and remove test containers # 停止並移除測試容器
         run: |
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
+            echo 'Navigating to project directory...'
+            cd ~/notion-clone-project &&
             echo 'Stopping and removing test containers...'
             sudo docker-compose -f docker-compose.test.yml down
           "
