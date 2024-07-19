@@ -23,17 +23,13 @@ jobs: # 工作
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa_notion_clone
           chmod 600 ~/.ssh/id_rsa_notion_clone
 
-      - name: Connect to EC2 and start Docker Compose # 連接到 EC2 並啟動 Docker Compose
+      # 測試階段：啟動容器、運行測試並清理
+      - name: Start test containers # 啟動測試容器
         run: |
-          echo "Connecting to EC2 instance..."
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
-            echo 'Changing directory to notion-clone-project...'
-            cd ~/notion-clone-project &&
-            echo 'Starting Docker Compose...'
-            sudo docker-compose --env-file .env.docker up -d
+            echo 'Starting test containers...'
+            sudo docker-compose -f docker-compose.test.yml up -d
           "
-        env: # 環境變量
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
 
       - name: Wait for containers and run tests # 等待容器啟動並運行測試
         run: |
@@ -41,19 +37,15 @@ jobs: # 工作
             echo 'Waiting for containers to start...'
             sleep 20 &&
             echo 'Running tests...'
-            sudo docker exec notion-clone-project npm test -- --watch=false
+            sudo docker exec notion-clone-project_app_1 npm test -- --watch=false
           "
-        env: # 環境變量
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
 
       - name: Stop and remove test containers # 停止並移除測試容器
         run: |
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
             echo 'Stopping and removing test containers...'
-            sudo docker-compose down
+            sudo docker-compose -f docker-compose.test.yml down
           "
-        env: # 環境變量
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
 
       - name: Deploy to server # 部署到伺服器
         run: |
@@ -71,7 +63,6 @@ jobs: # 工作
             sudo docker-compose up --build -d &&
             echo 'Cleaning up unused Docker data...'
             sudo docker system prune -f
-          "
-          echo "Deployment finished."
+          "          echo "Deployment finished."
         env: # 環境變量
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
