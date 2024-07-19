@@ -23,24 +23,34 @@ jobs: # 工作
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa_notion_clone
           chmod 600 ~/.ssh/id_rsa_notion_clone
 
-      - name: Test SSH connection # 測試 SSH 連接
+      - name: Connect to EC2 and start Docker Compose # 連接到 EC2 並啟動 Docker Compose
         run: |
-          ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "echo 'SSH connection successful'"
-          echo "SSH connection test finished."
-
-      - name: Run unit tests in Docker Compose # 在 Docker Compose 中運行單元測試
-        run: |
-          echo "Starting unit tests..."
           echo "Connecting to EC2 instance..."
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
             echo 'Changing directory to notion-clone-project...'
             cd ~/notion-clone-project &&
-            echo 'Running Docker Compose for tests...'
-            sudo docker-compose -f docker-compose.test.yml up --abort-on-container-exit || exit 1 &&
+            echo 'Starting Docker Compose...'
+            sudo docker-compose --env-file .env.docker up -d
+          "
+        env: # 環境變量
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
+
+      - name: Wait for containers and run tests # 等待容器啟動並運行測試
+        run: |
+          ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
             echo 'Waiting for containers to start...'
             sleep 20 &&
+            echo 'Running tests...'
+            sudo docker exec notion-clone-project npm test -- --watch=false
+          "
+        env: # 環境變量
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
+
+      - name: Stop and remove test containers # 停止並移除測試容器
+        run: |
+          ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
             echo 'Stopping and removing test containers...'
-            sudo docker-compose -f docker-compose.test.yml down
+            sudo docker-compose down
           "
         env: # 環境變量
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
