@@ -31,7 +31,8 @@ jobs: # 工作
       - name: Run unit tests in Docker Compose # 在 Docker Compose 中運行單元測試
         run: |
           echo "Starting unit tests..."
-          docker-compose -f docker-compose.test.yml up --abort-on-container-exit || exit 1
+          cd ~/notion-clone-project
+          docker-compose --env-file .env -f docker-compose.test.yml up --abort-on-container-exit || exit 1
           sleep 15 # 等待容器啟動
           docker-compose -f docker-compose.test.yml down
         env: # 環境變量
