@@ -38,7 +38,7 @@ jobs: # 工作
             echo 'Running Docker Compose for tests...'
             sudo docker-compose -f docker-compose.test.yml up --abort-on-container-exit || exit 1 &&
             echo 'Waiting for containers to start...'
-            sleep 15 &&
+            sleep 20 &&
             echo 'Stopping and removing test containers...'
             sudo docker-compose -f docker-compose.test.yml down
           "
