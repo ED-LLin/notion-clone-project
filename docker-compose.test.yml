@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    image: notion-clone:latest
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mongodb
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_URI=mongodb://mongodb:27017/notion-clone-test-db # 使用測試數據庫
+    command: npm test -- --watch=false --testPathPattern=tests/jest # 執行測試命令
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_test:/data/db # 使用測試數據卷
+
+volumes:
+  mongodb_data_test:

@@ -4,7 +4,7 @@ on: # 觸發條件
   push: # 當推送到以下分支時觸發
     branches:
       - main # 主分支
-      - setup-ci-cd # 設置 CI/CD 的分支
+      - ci-cd-add-unit-test # 設置 CI/CD 的分支
   pull_request: # 當拉取請求到以下分支時觸發
     branches:
       - main # 主分支
@@ -27,6 +27,15 @@ jobs: # 工作
         run: |
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "echo 'SSH connection successful'"
           echo "SSH connection test finished."
+
+      - name: Run unit tests in Docker Compose # 在 Docker Compose 中運行單元測試
+        run: |
+          echo "Starting unit tests..."
+          docker-compose -f docker-compose.test.yml up --abort-on-container-exit || exit 1
+          sleep 15 # 等待容器啟動
+          docker-compose -f docker-compose.test.yml down
+        env: # 環境變量
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
 
       - name: Deploy to server # 部署到伺服器
         run: |
