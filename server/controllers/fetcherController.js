@@ -6,12 +6,28 @@ const redisClient = require('../config/redisClient');
 
 exports.socialContentForm = async(req, res) => {
     try {
-        const user = await User.findById(req.user);
-        // console.log('user through fetcherControllser is:', req.user._id);
+        const userId = req.user._id;
+
+        // Validate userId as a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send('Invalid user ID format');
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('User not found in database');
+        }
+
+        // Confirm user._id matches req.user._id
+        if (user._id.toString() !== userId.toString()) {
+            return res.status(403).send('User ID does not match');
+        }
+
         const socialData = await SocialData.aggregate([
-            { $match: { user: new mongoose.Types.ObjectId(req.user._id) } }, 
+            { $match: { user: new mongoose.Types.ObjectId(userId) } },
             { $sort: { createdAt: -1 } }
         ]);
+
         res.status(200).render('fetch-content/social-content', {
             layout: '../views/layouts/dashboard',
             user,
@@ -24,19 +40,21 @@ exports.socialContentForm = async(req, res) => {
 };
 
 exports.socialContentSubmit = async(req, res) => {
-    
-    if (req.body.cachedSocialData && req.body.cachedSocialData.tempCacheId) {
-        const tempCacheId = req.body.cachedSocialData.tempCacheId;
-        res.status(302).redirect(`/fetch-content/saved-content/tempId:${tempCacheId}`);
-        try {
+    try {
+        // load data from cache
+        if (req.body.cachedSocialData && req.body.cachedSocialData.tempCacheId) {
+            const tempCacheId = req.body.cachedSocialData.tempCacheId;
             await loadData(req.body.cachedSocialData);
-        } catch (error) {
-            console.log('failed to load cache content to MongoDB', error);
+            res.status(302).redirect(`/fetch-content/saved-content/tempId:${tempCacheId}`);
+        // load data from API savedData
+        } else if (req.body.savedData && req.body.savedData._id) {
+            res.status(302).redirect(`/fetch-content/saved-content/${req.body.savedData._id.toString()}`);
+        } else {
+            res.status(400).send('Invalid request data');
         }
-    } else if (req.body.savedData && req.body.savedData._id) {
-        res.status(302).redirect(`/fetch-content/saved-content/${req.body.savedData._id.toString()}`);
-    } else {
-        res.status(400).send('Invalid request data');
+    } catch (error) {
+        console.error('Failed to load cache content to MongoDB', error);
+        res.status(500).send('Internal Server Error');
     }
 };
 
@@ -55,18 +73,20 @@ exports.viewSocialContent = async(req, res) => {
                 }
                 socialContent = JSON.parse(socialContent);
             } catch (error) {
-                console.log('Cache data expired or lost');
-                return res.status(404).send('Failed to retrieve cache data');
+                console.error('Error retrieving cache data:', error);
+                return res.status(500).send('Failed to fetch cache data');
             }
         } else {
             if (!mongoose.Types.ObjectId.isValid(socialContentId)) {
-                return res.status(404).send('Content not found in database');
+                return res.status(400).send('Invalid content ID format');
             }
 
-            socialContent = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
-            if (!socialContent) {
+            // const socialDataQuery = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
+            const socialData = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
+            if (!socialData) {
                 return res.status(404).send('Content not found or no permission');
             }
+            socialContent = socialData;
         }
 
         res.status(200).render('./fetch-content/view-content', {
@@ -84,25 +104,44 @@ exports.deleteSocialContent = async (req, res) => {
     try {
         const socialContentId = req.params.id;
 
+        // 檢查 socialContentId 是否為有效的 ObjectId
         if (!mongoose.Types.ObjectId.isValid(socialContentId)) {
-            return res.status(404).send("Content not found or failed to delete");
+            return res.status(400).send('Invalid content ID format');
+        }
+
+        // 檢查 req.user 是否存在
+        if (!req.user || !req.user._id) {
+            return res.status(401).send('Unauthorized');
         }
 
         const socialContent = await SocialData.findById(socialContentId);
 
+        // 檢查是否找到內容
         if (!socialContent) {
-            return res.status(404).send("Content not found");
+            return res.status(404).send('Content not found');
         }
 
+        // 檢查用戶是否有權限刪除內容
         if (socialContent.user.toString() !== req.user._id.toString()) {
-            return res.status(403).send("No permission to delete this content");
+            return res.status(403).send('No permission to delete this content');
         }
 
-        await SocialData.findByIdAndDelete(socialContentId);
+        const deleteResult = await SocialData.findByIdAndDelete(socialContentId);
+
+        // 檢查刪除操作是否成功
+        if (!deleteResult) {
+            return res.status(500).send('Failed to delete content');
+        }
 
         res.status(302).redirect('/dashboard');
     } catch (error) {
-        console.log("delete socialContent error: ", error);
-        res.status(500).send("Server Error");
+        console.error('delete socialContent error: ', error);
+
+        // 檢查是否為資料庫連接錯誤
+        if (error instanceof mongoose.Error) {
+            return res.status(500).send('Database connection error');
+        }
+
+        res.status(500).send('Server Error');
     }
 }
