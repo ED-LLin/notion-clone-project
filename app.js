@@ -26,7 +26,11 @@ logger.error('This is an error message');
 app.use(blacklistChecker);
 
 // 用 rate limiter 限制流量
-app.use(rateLimiter);
+if (process.env.NODE_ENV !== 'test') {
+  app.use(rateLimiter);
+} else {
+    console.log('rateLimiter not working');
+}
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
