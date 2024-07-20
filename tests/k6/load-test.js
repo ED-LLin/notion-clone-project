@@ -16,6 +16,6 @@ export let options = {
 };
 
 export default function () {
-    http.get('http://localhost:3000');
+    http.get('http://app:3000');  // 把 localhost 改成 app 好讓 k6  在 docker 中運行測試
     sleep(1);
 }

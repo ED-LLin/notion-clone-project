@@ -1,0 +1,36 @@
+services:
+  app:
+    image: notion-clone:latest
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mongodb
+    environment:
+      - NODE_ENV=test  # 設定 NODE_ENV 為 test
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_URI=mongodb://mongodb:27017/notion-clone-db
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  k6:
+    image: grafana/k6
+    volumes:
+      - ./tests:/tests
+    entrypoint: ["k6", "run", "/tests/k6/load-test.js"]
+
+volumes:
+  mongodb_data:
