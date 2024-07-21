@@ -1,3 +1,7 @@
+networks:
+  k6:
+  grafana:
+
 services:
   app:
     image: notion-clone:latest
@@ -10,14 +14,18 @@ services:
       - redis
       - mongodb
     environment:
-      - NODE_ENV=test  # 設定 NODE_ENV 為 test
+      - NODE_ENV=test
       - REDIS_URL=redis://redis:6379
       - MONGODB_URI=mongodb://mongodb:27017/notion-clone-db
+    networks:
+      - k6
 
   redis:
     image: "redis:latest"
     ports:
       - "6379:6379"
+    networks:
+      - k6
 
   mongodb:
     image: "mongo:latest"
@@ -25,12 +33,44 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - k6
 
   k6:
     image: grafana/k6
     volumes:
       - ./tests:/tests
-    entrypoint: ["k6", "run", "/tests/k6/load-test.js"]
+    entrypoint: ["k6", "run", "--out", "influxdb=http://influxdb:8086/k6", "/tests/k6/load-test.js"]
+    networks:
+      - k6
+    environment:
+      - K6_INFLUXDB_ADDR=http://influxdb:8086
+      - K6_INFLUXDB_DB=k6
+
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=k6
+    networks:
+      - k6
+      - grafana
+
+  grafana:
+    image: grafana/grafana:9.3.8
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/
+    networks:
+      - grafana
 
 volumes:
   mongodb_data:
+  influxdb_data:
+  grafana_data:
