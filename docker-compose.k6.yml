@@ -46,7 +46,7 @@ services:
     environment:
       - K6_INFLUXDB_ADDR=http://influxdb:8086
       - K6_INFLUXDB_DB=k6
-      - K6_INFLUXDB_PUSH_INTERVAL=3s
+      - K6_INFLUXDB_PUSH_INTERVAL=5s
 
   influxdb:
     image: influxdb:1.8
