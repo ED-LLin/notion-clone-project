@@ -14,7 +14,7 @@ You can now visit the application at [notion-clone.com](https://notion-clone.com
 
 
 ## Language and Tools
-[![Skills and Tools](https://skillicons.dev/icons?i=nodejs,express,mongodb,redis,html,tailwind,aws,nginx,docker,)](https://skillicons.dev)
+[![Skills and Tools](https://skillicons.dev/icons?i=nodejs,express,mongodb,redis,html,tailwind,aws,nginx,docker,jest,grafana)](https://skillicons.dev)
 
 - Backend
     - Node.js
@@ -46,6 +46,10 @@ You can now visit the application at [notion-clone.com](https://notion-clone.com
 - APIs
     - Rapid API
     - OpenAI API
+
+- Tests
+    - Unit Test: jest
+    - Load Test: k6, influxDB, Grafana
 
 ## Techniques
 ### 💡 Brief Architecture
@@ -95,6 +99,57 @@ All files              |   95.45 |    97.43 |      80 |   95.45 |
 - Improve ETL tests by increasing coverage for `etl/load.js`, ensuring all functions are tested, and addressing lines 4-13.
 - Add a test case to cover line 74 in `fetcherController.js` for more coverage in Controller.
 
+### 💡 K6 Load Testing Results
+
+#### Test Configuration
+
+We performed a k6 load test on the root route ("/") to assess the application's performance. The test setup included:
+
+- **Duration**: 13 minutes
+- **Virtual Users (VUs)**: Up to 200 VUs
+- **Stages**:
+  1. Ramp up to 40 VUs over 1 minute
+  2. Increase to 80 VUs over 1 minute
+  3. Increase to 120 VUs over 1 minute
+  4. Increase to 160 VUs over 1 minute
+  5. Increase to 200 VUs over 1 minute
+  6. Maintain 200 VUs for 5 minutes
+  7. Ramp down to 0 VUs over 3 minutes
+
+- **Performance Threshold**: 95% of requests must complete within 500ms
+
+#### Test Results
+![k6 Load Testing Results](public/img/README-k6_Load_Testing_Results.png)
+
+#### Key Metrics
+- Virtual Users: Gradually increased to 200 and maintained for 5 minutes.
+- Requests per Second: Peaked at approximately 261 requests per second.
+- HTTP Request Duration:
+    - Mean: 191.30 ms
+	- Max: 1.34 minutes
+	- Median: 2.69 ms
+	- 90th Percentile: 25.74 ms
+	- 95th Percentile: 56.47 ms
+- HTTP Request Blocked Duration:
+	- Mean: 0.88 ms
+	- Max: 6.20 seconds
+	- Median: 0.01 ms
+	- 90th Percentile: 0.01 ms
+	- 95th Percentile: 0.03 ms
+
+#### Challenges Encountered
+During the load testing, we encountered several issues:
+- **Flush Operation Delays**: The flush operation to InfluxDB took longer than the expected interval, suggesting that the setup or configuration needs adjustment to handle the load sustainably.
+   ```
+   The flush operation took higher than the expected set push interval. If you see this message multiple times then the setup or configuration need to be adjusted to achieve a sustainable rate.`
+    ```
+#### To Be Improved
+Based on the test results and challenges encountered, the following improvements are recommended:
+- **Enhance Infrastructure**:
+  - Scale the infrastructure to handle higher loads, including increasing the capacity of the database and server instances.
+  - Fine-tune the configuration of InfluxDB to ensure it can handle the data ingestion rate without delays.
+- **Adjust Data Push Configuration**:
+    -  Modify the k6 configuration to reduce the frequency of data pushes or increase the buffer size to avoid data loss during high load periods.
 
 ## Features Demo
 ### 1. GoogleAuth
