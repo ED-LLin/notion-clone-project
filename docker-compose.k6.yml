@@ -40,7 +40,7 @@ services:
     image: grafana/k6
     volumes:
       - ./tests:/tests
-    entrypoint: ["k6", "run", "--out", "influxdb=http://influxdb:8086/k6", "/tests/k6/load-test.js"]
+    entrypoint: ["k6", "run", "--out", "influxdb=http://influxdb:8086/k6", "--push-interval", "10s", "/tests/k6/load-test.js"]
     networks:
       - k6
     environment:
