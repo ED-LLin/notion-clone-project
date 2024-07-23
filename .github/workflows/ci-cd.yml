@@ -30,11 +30,11 @@ jobs: # 工作
             echo 'Entering project directory...'
             cd ~/notion-clone-project &&
             echo 'Stopping existing test containers...'
-            sudo docker compose -f docker-compose.test.yml down --remove-orphans &&
+            sudo docker-compose -f docker-compose.test.yml down --remove-orphans &&
             echo 'Pulling latest code from GitHub...'
             git pull origin main &&
             echo 'Starting test containers...'
-            sudo docker compose -f docker-compose.test.yml up -d --remove-orphans &&
+            sudo docker-compose -f docker-compose.test.yml up -d --remove-orphans &&
             echo 'Waiting for containers to start...'
             sleep 20 &&
             echo 'Running testsß...'
@@ -47,7 +47,7 @@ jobs: # 工作
             echo 'Navigating to project directory...'
             cd ~/notion-clone-project &&
             echo 'Stopping and removing test containers...'
-            sudo docker compose -f docker-compose.test.yml down --remove-orphans
+            sudo docker-compose -f docker-compose.test.yml down --remove-orphans
           "
 
       - name: Deploy to server # 部署到伺服器
@@ -59,9 +59,9 @@ jobs: # 工作
             echo 'Navigating to project directory...'
             cd ~/notion-clone-project &&
             echo 'Stopping existing containers...'
-            sudo docker compose down --remove-orphans &&
+            sudo docker-compose down --remove-orphans &&
             echo 'Building and starting Docker Compose...'
-            sudo docker compose up --build -d --remove-orphans &&
+            sudo docker-compose up --build -d --remove-orphans &&
             echo 'Cleaning up unused Docker data...'
             sudo docker system prune -f
           "
