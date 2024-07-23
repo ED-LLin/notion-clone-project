@@ -32,7 +32,7 @@ jobs: # 工作
             echo 'Pulling latest code from GitHub...'
             git pull origin main &&
             echo 'Starting test containers...'
-            sudo docker-compose -f docker-compose.test.yml up -d &&
+            sudo docker-compose -f docker-compose.test.yml up -d --remove-orphans &&
             echo 'Waiting for containers to start...'
             sleep 20 &&
             echo 'Running tests...'
@@ -45,7 +45,7 @@ jobs: # 工作
             echo 'Navigating to project directory...'
             cd ~/notion-clone-project &&
             echo 'Stopping and removing test containers...'
-            sudo docker-compose -f docker-compose.test.yml down
+            sudo docker-compose -f docker-compose.test.yml down --remove-orphans
           "
 
       - name: Deploy to server # 部署到伺服器
@@ -56,14 +56,13 @@ jobs: # 工作
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
             echo 'Navigating to project directory...'
             cd ~/notion-clone-project &&
-            echo 'Pulling latest code from GitHub...'
-            git pull origin main &&
             echo 'Stopping existing containers...'
-            sudo docker-compose down &&
+            sudo docker-compose down --remove-orphans &&
             echo 'Building and starting Docker Compose...'
-            sudo docker-compose up --build -d &&
+            sudo docker-compose up --build -d --remove-orphans &&
             echo 'Cleaning up unused Docker data...'
             sudo docker system prune -f
-          "          echo "Deployment finished."
+          "
+          echo "Deployment finished."
         env: # 環境變量
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私鑰
