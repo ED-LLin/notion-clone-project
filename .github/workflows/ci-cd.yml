@@ -23,19 +23,21 @@ jobs: # 工作
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa_notion_clone
           chmod 600 ~/.ssh/id_rsa_notion_clone
 
-      # 測試階段：拉取最新代碼、啟動容器、運行測試並清理
+      # 測試階段：拉取最新代碼、停止已存在的容器、啟動容器、運行測試並清理
       - name: Run tests on EC2 instance
         run: |
           ssh -i ~/.ssh/id_rsa_notion_clone -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP_ADDRESS }} "
             echo 'Entering project directory...'
             cd ~/notion-clone-project &&
+            echo 'Stopping existing test containers...'
+            sudo docker-compose -f docker-compose.test.yml down --remove-orphans &&
             echo 'Pulling latest code from GitHub...'
             git pull origin main &&
             echo 'Starting test containers...'
             sudo docker-compose -f docker-compose.test.yml up -d --remove-orphans &&
             echo 'Waiting for containers to start...'
             sleep 20 &&
-            echo 'Running tests...'
+            echo 'Running testsß...'
             sudo docker exec notion-clone-project_app_1 npm test -- --watch=false
           "
 
