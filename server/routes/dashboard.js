@@ -12,6 +12,7 @@ router.get('/notes/:id',isLoggedIn, dashboardController.dashboardViewNote);
 router.put('/notes/:id', isLoggedIn ,dashboardController.dashboardUpdateNote);
 router.delete('/notes/:id', isLoggedIn ,dashboardController.dashboardDeleteNote);
 router.get('/search', isLoggedIn ,dashboardController.dashboardSearch);
+router.get('/tags/:tag', isLoggedIn, dashboardController.viewTag)
 
 
 module.exports = router;

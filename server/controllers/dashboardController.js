@@ -292,3 +292,28 @@ exports.dashboardSearch = async (req, res) => {
         res.status(500).send("Error during search.");
     }
 };
+
+exports.viewTag = async (req, res) => {
+    try {
+        const tag = req.params.tag;
+        const userId = req.user.id;
+        const notes = await Note.aggregate([
+            { $match: {user: new mongoose.Types.ObjectId(userId) } },
+            { $match: { aiTags: { $regex: new RegExp(tag, 'i') } } },
+            {$sort: {createdAt: -1}}
+        ]);
+        const socialData = await SocialData.aggregate([
+            { $match: {user: new mongoose.Types.ObjectId(userId), aiTags: tag }},
+            { $match: { aiTags: { $regex: new RegExp(tag, 'i') } } },
+            { $sort: {createdAt: -1}}
+        ]);
+        res.status(200).render('dashboard/view-tag', { 
+            layouts: '../views/layouts/dashboard',
+            tag,
+            socialData, 
+            notes 
+        });
+    } catch (error) {
+        res.status(500).send({ message: 'Server Error' });
+    }
+};

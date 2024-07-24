@@ -33,7 +33,7 @@
                     <% if(note.aiTags && note.aiTags.length > 0) { %>
                         <div class="mt-2 flex flex-wrap gap-2">
                             <% note.aiTags.forEach(tag => { %>
-                                <span class="inline-flex items-center justify-center border border-gray-500 text-xs text-gray-500 rounded-full px-2 py-0.5">#<%= tag %></span>
+                                <a href="/dashboard/tags/<%= tag %>" class="inline-flex items-center justify-center border border-gray-500 text-xs text-gray-500 rounded-full px-2 py-0.5">#<%= tag %></a>
                             <% }) %>
                         </div>
                     <% } %>

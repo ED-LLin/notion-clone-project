@@ -22,7 +22,7 @@
             <% if(socialContent.aiTags && socialContent.aiTags.length > 0) { %>
                 <div class="mt-2 flex flex-wrap gap-2"> <!-- 新增 flex 和 gap 以排列標籤 -->
                     <% socialContent.aiTags.forEach(tag => { %>
-                        <span class="inline-flex items-center justify-center border border-gray-500 text-xs text-gray-500 rounded-full px-2 py-0.5">#<%= tag %></span> <!-- 將標籤改為圓角長方形按鈕，去掉背景 -->
+                        <a href="/dashboard/tags/<%= tag %>" class="inline-flex items-center justify-center border border-gray-500 text-xs text-gray-500 rounded-full px-2 py-0.5">#<%= tag %></a> <!-- 將標籤改為 a 標籤，並設定路由 -->
                     <% }) %>
                 </div>
             <% } %>
@@ -130,5 +130,6 @@
         </div>
         </div>
         <div style="padding-bottom: 5rem;"></div>
+        
     </div>
 </body>
