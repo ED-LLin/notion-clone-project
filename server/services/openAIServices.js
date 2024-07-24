@@ -2,9 +2,12 @@ require('dotenv').config({ path: '../../.env' }); // Specify the path to the .en
 const OpenAI = require("openai");
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-exports.singleTurnConversationJsonFormat = async function(messages) {
+exports.singleTurnConversationJsonFormat = async function(systemMessage, prompt) {
     const completion = await openai.chat.completions.create({
-        messages: messages,
+        messages: [
+            { role: "system", content: systemMessage },
+            { role: "user", content: prompt }
+        ],
         model: "gpt-3.5-turbo",
         response_format: { type: "json_object"}
     });

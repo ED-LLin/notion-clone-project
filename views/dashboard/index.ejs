@@ -22,6 +22,13 @@
                             <a href="/dashboard/notes/<%= note._id %>" class="block bg-white p-4 mb-4 rounded-md shadow-md hover:bg-gray-50">
                                 <p class="font-bold"><%= note.title %></p> <!-- 標題用 font-bold 呈現 -->
                                 <p class="text-sm text-gray-600 truncate mt-2"><%= note.body %></p>
+                                <% if(note.aiTags && note.aiTags.length > 0) { %> <!-- 新增 aiTags 顯示 -->
+                                    <div class="mt-2 flex flex-wrap gap-2"> <!-- 新增 flex 和 gap 以排列標籤 -->
+                                        <% note.aiTags.forEach(tag => { %>
+                                            <span class="inline-flex items-center justify-center border border-gray-500 text-xs text-gray-500 rounded-full px-2 py-0.5">#<%= tag %></span> <!-- 將標籤改為圓角長方形按鈕，去掉背景 -->
+                                        <% }) %>
+                                    </div>
+                                <% } %>
                             </a>
                         <% }); %>
                     <% } else { %>
@@ -49,9 +56,9 @@
                                     <% } %>
                                     <p class="font-bold"><%= (data.title || data.textContent).length > 24 ? (data.title || data.textContent).substring(0, 24) + '...' : (data.title || data.textContent) %></p>
                                     <% if(data.aiTags && data.aiTags.length > 0) { %>
-                                        <div class="mt-2">
+                                        <div class="mt-2 flex flex-wrap gap-2"> <!-- 新增 flex 和 gap 以排列標籤 -->
                                             <% data.aiTags.forEach(tag => { %>
-                                                <span class="text-sm text-gray-600">#<%= tag %></span>
+                                                <span class="inline-flex items-center justify-center border border-gray-500 text-xs text-gray-500 rounded-full px-2 py-0.5">#<%= tag %></span> <!-- 將標籤改為圓角長方形按鈕，去掉背景 -->
                                             <% }) %>
                                         </div>
                                     <% } %>

@@ -14,6 +14,10 @@ const NoteSchema = new Schema({
         type: String,
         required: true,
     },
+    aiTags: [{
+        type: String,
+        required: false
+    }],
     createdAt:{
         type: Date,
         default: Date.now()

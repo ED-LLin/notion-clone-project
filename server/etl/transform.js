@@ -67,18 +67,20 @@ exports.transformData = async (socialUrl, platform, extractedData, userId) => {
 
     // 增加 AI 標籤
     const titleAndTextContent = transformedData.title + transformedData.textContent;
-    const messages = [
-        { role: "system", content: "You are a helpful knowledge assistant, who reply anything in traditional Chinese and always output JSON. Please only return a JSON object with a single key 'tags' which is an array of three category tags." },
-        { role: "user", content: `為以下內容提供三個分類標籤 ${titleAndTextContent}` }
-    ]
+    // const messages = [
+    //     { role: "system", content: "You are a helpful knowledge assistant, who reply anything in traditional Chinese and always output JSON. Please only return a JSON object with a single key 'tags' which is an array of three category tags." },
+    //     { role: "user", content: `為以下內容提供三個分類標籤 ${titleAndTextContent}` }
+    // ]
+    const systemMessage = "You are a helpful knowledge assistant, who reply anything in traditional Chinese and always output JSON. Please only return a JSON object with a single key 'tags' which is an array of three category tags."
+    const prompt = `為以下內容提供三個分類標籤 ${titleAndTextContent}`
 
     try {
-        const aiResponse = await singleTurnConversationJsonFormat(messages); // 回傳 JSON 字串，而非 JS 物件
+        const aiResponse = await singleTurnConversationJsonFormat(systemMessage, prompt); // 回傳 JSON 字串，而非 JS 物件
         const aiTags = JSON.parse(aiResponse.choices[0].message.content).tags; // 透過 JSON.parse 解析
         console.log(`AI tagging success!`, aiTags);
         transformedData.aiTags = aiTags;
     } catch (error) {
-        console.error('Error during AI Tagging', error);
+        console.error('Error during social content AI tagging', error);
         throw error;
     }
 
