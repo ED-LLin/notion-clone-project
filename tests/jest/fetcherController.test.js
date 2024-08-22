@@ -31,69 +31,6 @@ jest.mock('mongoose', () => {
     };
 });
 
-describe('socialContentForm', () => {
-    let req, res;
-
-    beforeEach(() => {
-        req = { user: { _id: '507f1f77bcf86cd799439011' } }; // 使用有效的 ObjectId
-        res = {
-            status: jest.fn().mockReturnThis(),
-            render: jest.fn(),
-            send: jest.fn()
-        };
-    });
-
-    test('should return 400 if userId is not a valid ObjectId', async () => {
-        req.user._id = 'invalidObjectId';
-
-        await socialContentForm(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.send).toHaveBeenCalledWith('Invalid user ID format');
-    });
-
-    test('should return 404 if user is not found', async () => {
-        User.findById.mockResolvedValue(null);
-
-        await socialContentForm(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.send).toHaveBeenCalledWith('User not found in database');
-    });
-
-    test('should return 403 if user._id does not match req.user._id', async () => {
-        User.findById.mockResolvedValue({ _id: '507f1f77bcf86cd799439012' });
-
-        await socialContentForm(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(403);
-        expect(res.send).toHaveBeenCalledWith('User ID does not match');
-    });
-
-    test('should return 200 and render social content if user and socialData are found', async () => {
-        User.findById.mockResolvedValue({ _id: '507f1f77bcf86cd799439011' });
-        SocialData.aggregate.mockResolvedValue([{ _id: 'someDataId' }]);
-
-        await socialContentForm(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.render).toHaveBeenCalledWith('fetch-content/social-content', {
-            layout: '../views/layouts/dashboard',
-            user: { _id: '507f1f77bcf86cd799439011' },
-            socialData: [{ _id: 'someDataId' }]
-        });
-    });
-
-    test('should return 500 if there is an error', async () => {
-        User.findById.mockRejectedValue(new Error('Database error'));
-
-        await socialContentForm(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith('Internal Server Error');
-    });
-});
-
 describe('socialContentSubmit', () => {
     let req, res;
 

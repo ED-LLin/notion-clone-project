@@ -6,60 +6,6 @@ const redisClient = require('../config/redisClient');
 
 /**
  * @swagger
- * /social-content:
- *   get:
- *     summary: 獲取用戶的社交內容
- *     tags: [Fetch Social Content]
- *     description: 根據用戶 ID 獲取社交內容並渲染表單。
- *     responses:
- *       200:
- *         description: 成功獲取社群媒體內容，返回社群表單。
- *       400:
- *         description: 用戶 ID 格式無效。
- *       404:
- *         description: 找不到用戶。
- *       403:
- *         description: 用戶 ID 不匹配。
- *       500:
- *         description: 內部伺服器錯誤。
- */
-exports.socialContentForm = async(req, res) => {
-    try {
-        const userId = req.user._id;
-
-        // Validate userId as a valid ObjectId
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).send('Invalid user ID format');
-        }
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).send('User not found in database');
-        }
-
-        // Confirm user._id matches req.user._id
-        if (user._id.toString() !== userId.toString()) {
-            return res.status(403).send('User ID does not match');
-        }
-
-        const socialData = await SocialData.aggregate([
-            { $match: { user: new mongoose.Types.ObjectId(userId) } },
-            { $sort: { createdAt: -1 } }
-        ]);
-
-        res.status(200).render('fetch-content/social-content', {
-            layout: '../views/layouts/dashboard',
-            user,
-            socialData
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
-};
-
-/**
- * @swagger
  * /social-content/submit:
  *   post:
  *     summary: 提交社交內容 URL
