@@ -4,6 +4,25 @@ const User = require('../models/User');
 const { loadData } = require('../etl/load');
 const redisClient = require('../config/redisClient');
 
+/**
+ * @swagger
+ * /social-content:
+ *   get:
+ *     summary: 獲取用戶的社交內容
+ *     tags: [Fetch Social Content]
+ *     description: 根據用戶 ID 獲取社交內容並渲染表單。
+ *     responses:
+ *       200:
+ *         description: 成功獲取社群媒體內容，返回社群表單。
+ *       400:
+ *         description: 用戶 ID 格式無效。
+ *       404:
+ *         description: 找不到用戶。
+ *       403:
+ *         description: 用戶 ID 不匹配。
+ *       500:
+ *         description: 內部伺服器錯誤。
+ */
 exports.socialContentForm = async(req, res) => {
     try {
         const userId = req.user._id;
@@ -39,6 +58,38 @@ exports.socialContentForm = async(req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * /social-content/submit:
+ *   post:
+ *     summary: 提交社交內容 URL
+ *     tags: [Fetch Social Content] 
+ *     description: 提交社交內容，支持從快取或 API 獲取數據。
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cachedSocialData:
+ *                 type: object
+ *                 properties:
+ *                   tempCacheId:
+ *                     type: string
+ *               savedData:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *     responses:
+ *       302:
+ *         description: 成功重定向到保存的內容。
+ *       400:
+ *         description: 請求數據無效。
+ *       500:
+ *         description: 內部伺服器錯誤。
+ */
 exports.socialContentSubmit = async(req, res) => {
     try {
         // load data from cache
@@ -58,6 +109,30 @@ exports.socialContentSubmit = async(req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * /social-content/{id}:
+ *   get:
+ *     summary: 查看社交內容
+ *     tags: [Fetch Social Content] 
+ *     description: 根據內容 ID 獲取社交內容，支持從快取或資料庫中檢索。
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: 社交內容的唯一標識符。
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: 成功獲取社交內容並渲染。
+ *       400:
+ *         description: 內容 ID 格式無效。
+ *       404:
+ *         description: 找不到內容或無權限訪問。
+ *       500:
+ *         description: 伺服器錯誤。
+ */
 exports.viewSocialContent = async(req, res) => {
     try {
         let socialContent;
@@ -100,6 +175,34 @@ exports.viewSocialContent = async(req, res) => {
     }
 }
 
+/**
+ * @swagger
+ * /social-content/{id}:
+ *   delete:
+ *     summary: 刪除社交內容
+ *     tags: [Fetch Social Content] 
+ *     description: 根據內容 ID 刪除社交內容，僅限擁有者操作。
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: 社交內容的唯一標識符。
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: 成功刪除內容並重定向到儀表板。
+ *       400:
+ *         description: 內容 ID 格式無效。
+ *       401:
+ *         description: 未授權，使用者未登入。
+ *       403:
+ *         description: 無權限刪除該內容。
+ *       404:
+ *         description: 找不到內容。
+ *       500:
+ *         description: 伺服器錯誤或資料庫連接錯誤。
+ */
 exports.deleteSocialContent = async (req, res) => {
     try {
         const socialContentId = req.params.id;

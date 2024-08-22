@@ -6,7 +6,7 @@ const { etl } = require('../middleware/etl');
 const fetcherController = require('../controllers/fetcherController');
 
 
-router.get('/', isLoggedIn, fetcherController.socialContentForm);
+// router.get('/', isLoggedIn, fetcherController.socialContentForm);
 router.post('/submit-url', isLoggedIn, addPlatformToRequest, etl, fetcherController.socialContentSubmit);
 router.get('/saved-content/:id', isLoggedIn, fetcherController.viewSocialContent);
 router.delete('/saved-content/:id', isLoggedIn, fetcherController.deleteSocialContent);

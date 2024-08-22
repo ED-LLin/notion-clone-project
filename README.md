@@ -162,7 +162,7 @@ Currently, the application supports fetching content from Instagram and YouTube.
 
 ## Requirements
 - Node.js >= 14.0.0
-- MongoDB
+- MongoDB Atlas
 
 ## Installation
 1. Clone the repository:
@@ -190,4 +190,4 @@ Currently, the application supports fetching content from Instagram and YouTube.
 
 
 ## API Documentation
-This project includes Swagger API documentation. To access the API docs, navigate to [notionclone.com/api-docs](http://notionclone.com/api-docs) in your browser. The documentation provides detailed information on user authentication, note management, and search functionalities.
+This project includes Swagger API documentation. To access the API docs, navigate to [notion-clone.com/api-docs](http://notion-clone.com/api-docs) in your browser. The documentation provides detailed information on user authentication, note management, and search functionalities.

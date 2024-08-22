@@ -12,7 +12,7 @@ const SocialData = require('../models/SocialData');
  *     tags: [Dashboard]
  *     responses:
  *       200:
- *         description: 成功顯示儀表板
+ *         description: 成功顯示儀表板，包括使用者資訊、筆記和社交數據
  *         content:
  *           text/html:
  *             schema:
@@ -133,7 +133,7 @@ exports.dashboardSubmitNote = async(req, res) => {
  *       401:
  *         description: 使用者未登入
  *       404:
- *         description: 筆記未找到或無權限
+ *         description: 筆記未找到或��權限
  *       500:
  *         description: 伺服器錯誤
  */
