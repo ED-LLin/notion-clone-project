@@ -4,15 +4,15 @@ const swaggerOptions = {
       info: {
         title: 'Notion-Clone-Project API docs',
         version: '1.0.0',
-        description: '這是 Notion-Clone-Project 的 API 文件，提供了使用者認證、筆記管理和搜尋功能的詳細說明。',
+        description: 'This is the API documentation for the Notion-Clone-Project, providing detailed information on user authentication, note management, adding new notes, and fetching community content.',
       },
       servers: [
         {
-          url: 'http://localhost:3000',
+          url: 'http://notion-clone.com',
         },
       ],
     },
-    apis: ['./server/routes/*.js', './server/controllers/*.js'], // Added controllers folder
+    apis: ['./server/routes/*.js', './server/controllers/*.js'], 
   };
 
   module.exports = swaggerOptions;

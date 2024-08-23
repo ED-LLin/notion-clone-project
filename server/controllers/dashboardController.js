@@ -8,19 +8,19 @@ const SocialData = require('../models/SocialData');
  * @swagger
  * /dashboard:
  *   get:
- *     summary: 顯示使用者的儀表板
+ *     summary: Display user dashboard
  *     tags: [Dashboard]
  *     responses:
  *       200:
- *         description: 成功顯示儀表板，包括使用者資訊、筆記和社交數據
+ *         description: Successfully displayed the dashboard, including user information, notes, and social data
  *         content:
  *           text/html:
  *             schema:
  *               type: string
  *       401:
- *         description: 使用者未登入
+ *         description: User not logged in
  *       500:
- *         description: 伺服器錯誤
+ *         description: Server error
  */
 exports.dashboard = async(req, res) => {
     try {
@@ -50,19 +50,19 @@ exports.dashboard = async(req, res) => {
  * @swagger
  * /dashboard/add:
  *   get:
- *     summary: 顯示新增筆記頁面
+ *     summary: Display add note page
  *     tags: [Dashboard]
  *     responses:
  *       200:
- *         description: 成功顯示新增筆記頁面
+ *         description: Successfully displayed the add note page
  *         content:
  *           text/html:
  *             schema:
  *               type: string
  *       401:
- *         description: 使用者未登入
+ *         description: User not logged in
  *       500:
- *         description: 伺服器錯誤
+ *         description: Server error
  */
 exports.dashboardAddNote = async (req, res) => {
     try {
@@ -79,7 +79,7 @@ exports.dashboardAddNote = async (req, res) => {
  * @swagger
  * /dashboard/notes:
  *   post:
- *     summary: 提交新筆記
+ *     summary: Submit a new note
  *     tags: [Dashboard]
  *     requestBody:
  *       required: true
@@ -94,11 +94,11 @@ exports.dashboardAddNote = async (req, res) => {
  *                 type: string
  *     responses:
  *       302:
- *         description: 成功重定向到儀表板
+ *         description: Successfully redirected to the dashboard
  *       401:
- *         description: 未登入
+ *         description: Not logged in
  *       500:
- *         description: 伺服器錯誤
+ *         description: Server error
  */
 exports.dashboardSubmitNote = async(req, res) => {
     try{
@@ -115,7 +115,7 @@ exports.dashboardSubmitNote = async(req, res) => {
  * @swagger
  * /dashboard/notes/{id}:
  *   get:
- *     summary: 查看特定筆記
+ *     summary: View a specific note
  *     tags: [Dashboard]
  *     parameters:
  *       - in: path
@@ -125,17 +125,17 @@ exports.dashboardSubmitNote = async(req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: 成功顯示筆記
+ *         description: Successfully displayed the note
  *         content:
  *           text/html:
  *             schema:
  *               type: string
  *       401:
- *         description: 使用者未登入
+ *         description: User not logged in
  *       404:
- *         description: 筆記未找到或��權限
+ *         description: Note not found or no permission
  *       500:
- *         description: 伺服器錯誤
+ *         description: Server error
  */
 exports.dashboardViewNote = async(req, res) => {
     try {
@@ -169,7 +169,7 @@ exports.dashboardViewNote = async(req, res) => {
  * @swagger
  * /dashboard/notes/{id}:
  *   put:
- *     summary: 更新特定筆記
+ *     summary: Update a specific note
  *     tags: [Dashboard]
  *     parameters:
  *       - in: path
@@ -190,11 +190,11 @@ exports.dashboardViewNote = async(req, res) => {
  *                 type: string
  *     responses:
  *       302:
- *         description: 成功重定向到儀表板
+ *         description: Successfully redirected to the dashboard
  *       401:
- *         description: 使用者未登入
+ *         description: User not logged in
  *       500:
- *         description: 無法更新筆記
+ *         description: Unable to update the note
  */
 exports.dashboardUpdateNote = async(req, res) => {
     try {
@@ -218,7 +218,7 @@ exports.dashboardUpdateNote = async(req, res) => {
  * @swagger
  * /dashboard/notes/{id}:
  *   delete:
- *     summary: 刪除特定筆記
+ *     summary: Delete a specific note
  *     tags: [Dashboard]
  *     parameters:
  *       - in: path
@@ -228,11 +228,11 @@ exports.dashboardUpdateNote = async(req, res) => {
  *           type: string
  *     responses:
  *       302:
- *         description: 成功重定向到儀板
+ *         description: Successfully redirected to the dashboard
  *       401:
- *         description: 使用者未登入
+ *         description: User not logged in
  *       500:
- *         description: 刪除筆記時出錯
+ *         description: Error deleting the note
  */
 exports.dashboardDeleteNote = async(req, res) => {
     try {
@@ -251,7 +251,7 @@ exports.dashboardDeleteNote = async(req, res) => {
  * @swagger
  * /dashboard/search:
  *   get:
- *     summary: 搜尋筆記
+ *     summary: Search notes
  *     tags: [Dashboard]
  *     parameters:
  *       - in: query
@@ -261,15 +261,15 @@ exports.dashboardDeleteNote = async(req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: 成功顯示搜尋結果
+ *         description: Successfully displayed search results
  *         content:
  *           text/html:
  *             schema:
  *               type: string
  *       401:
- *         description: 使用者未登入
+ *         description: User not logged in
  *       500:
- *         description: 搜尋過程中出錯
+ *         description: Error during the search process
  */
 exports.dashboardSearch = async (req, res) => {
     try {
@@ -293,6 +293,29 @@ exports.dashboardSearch = async (req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * /dashboard/view-tag/{tag}:
+ *   get:
+ *     summary: View notes and social data by tag
+ *     tags: [Dashboard]
+ *     parameters:
+ *       - in: path
+ *         name: tag
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The tag to filter notes and social data
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved notes and social data for the specified tag
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       500:
+ *         description: Server error while retrieving data
+ */
 exports.viewTag = async (req, res) => {
     try {
         const tag = req.params.tag;

@@ -8,9 +8,9 @@ const redisClient = require('../config/redisClient');
  * @swagger
  * /social-content/submit:
  *   post:
- *     summary: 提交社交內容 URL
+ *     summary: Submit social content URL
  *     tags: [Fetch Social Content] 
- *     description: 提交社交內容，支持從快取或 API 獲取數據。
+ *     description: Submit social content, supporting data retrieval from cache or API.
  *     requestBody:
  *       required: true
  *       content:
@@ -30,11 +30,11 @@ const redisClient = require('../config/redisClient');
  *                     type: string
  *     responses:
  *       302:
- *         description: 成功重定向到保存的內容。
+ *         description: Successfully redirected to the saved content.
  *       400:
- *         description: 請求數據無效。
+ *         description: Invalid request data.
  *       500:
- *         description: 內部伺服器錯誤。
+ *         description: Internal server error.
  */
 exports.socialContentSubmit = async(req, res) => {
     try {
@@ -59,25 +59,25 @@ exports.socialContentSubmit = async(req, res) => {
  * @swagger
  * /social-content/{id}:
  *   get:
- *     summary: 查看社交內容
+ *     summary: View social content
  *     tags: [Fetch Social Content] 
- *     description: 根據內容 ID 獲取社交內容，支持從快取或資料庫中檢索。
+ *     description: Retrieve social content based on content ID, supporting retrieval from cache or database.
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: 社交內容的唯一標識符。
+ *         description: The unique identifier of the social content.
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: 成功獲取社交內容並渲染。
+ *         description: Successfully retrieved and rendered social content.
  *       400:
- *         description: 內容 ID 格式無效。
+ *         description: Invalid content ID format.
  *       404:
- *         description: 找不到內容或無權限訪問。
+ *         description: Content not found or no permission to access.
  *       500:
- *         description: 伺服器錯誤。
+ *         description: Server error.
  */
 exports.viewSocialContent = async(req, res) => {
     try {
@@ -125,29 +125,29 @@ exports.viewSocialContent = async(req, res) => {
  * @swagger
  * /social-content/{id}:
  *   delete:
- *     summary: 刪除社交內容
+ *     summary: Delete social content
  *     tags: [Fetch Social Content] 
- *     description: 根據內容 ID 刪除社交內容，僅限擁有者操作。
+ *     description: Delete social content by content ID, owner operation only.
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: 社交內容的唯一標識符。
+ *         description: The unique identifier of the social content.
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: 成功刪除內容並重定向到儀表板。
+ *         description: Successfully deleted content and redirected to the dashboard.
  *       400:
- *         description: 內容 ID 格式無效。
+ *         description: Invalid content ID format.
  *       401:
- *         description: 未授權，使用者未登入。
+ *         description: Unauthorized, user not logged in.
  *       403:
- *         description: 無權限刪除該內容。
+ *         description: No permission to delete this content.
  *       404:
- *         description: 找不到內容。
+ *         description: Content not found.
  *       500:
- *         description: 伺服器錯誤或資料庫連接錯誤。
+ *         description: Server error or database connection error.
  */
 exports.deleteSocialContent = async (req, res) => {
     try {

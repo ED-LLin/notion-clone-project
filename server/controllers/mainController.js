@@ -2,17 +2,17 @@
  * @swagger
  * /:
  *   get:
- *     summary: 顯示首頁
+ *     summary: Display homepage
  *     tags: [Main]
  *     responses:
  *       200:
- *         description: 成功顯示首頁
+ *         description: Successfully displayed homepage
  *         content:
  *           text/html:
  *             schema:
  *               type: string
  *       500:
- *         description: 伺服器錯誤
+ *         description: Server error
  */
 exports.homepage = async (req, res) => {
     try {
