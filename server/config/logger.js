@@ -9,9 +9,15 @@ class DiscordWebhook extends Transport {
     super(opts);
     this.webhookUrl = opts.webhookUrl;
     this.level = opts.level || 'warn'; // 設置默認級別為 'warn'
+    this.isTestEnv = process.env.NODE_ENV === 'test'; // 檢查是否為測試環境
   }
 
   async log(info, callback) {
+    if (this.isTestEnv) { // 如果是測試環境，則不發送 webhook
+      console.log(`log is not sent to Discord (test environment): ${info.level} - ${info.message}`);
+      return callback();
+    }
+
     if (this.silent || !this.levels[info.level] || this.levels[info.level] < this.levels[this.level]) {
       console.log(`log is not sent to Discord：${info.level} - ${info.message}`); // 添加調試信息
       return callback();

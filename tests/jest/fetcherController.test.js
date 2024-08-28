@@ -35,7 +35,10 @@ describe('socialContentSubmit', () => {
     let req, res;
 
     beforeEach(() => {
-        req = { body: {} };
+        req = { 
+            body: {}, 
+            user: { id: 'testUserId' }
+        };
         res = {
             status: jest.fn().mockReturnThis(),
             redirect: jest.fn(),
@@ -87,7 +90,7 @@ describe('viewSocialContent', () => {
     beforeEach(() => {
         req = {
             params: {},
-            user: { id: 'userId', _id: 'userId' }
+            user: { id: 'testUserId', _id: 'testUserId' }
         };
         res = {
             status: jest.fn().mockReturnThis(),
@@ -136,7 +139,7 @@ describe('viewSocialContent', () => {
         await viewSocialContent(req, res);
 
         expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.send).toHaveBeenCalledWith('Content not found or no permission');
+        expect(res.send).toHaveBeenCalledWith('Social content not found or no permission');
     });
 
     test('should return 404 when content is found but user ID does not match', async () => {
@@ -149,7 +152,7 @@ describe('viewSocialContent', () => {
         await viewSocialContent(req, res);
 
         expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.send).toHaveBeenCalledWith('Content not found or no permission');
+        expect(res.send).toHaveBeenCalledWith('Social content not found or no permission');
     });
     
     test('should return 200 and render view when successfully retrieving data', async () => {
@@ -211,7 +214,6 @@ describe('deleteSocialContent', () => {
             send: jest.fn(),
             redirect: jest.fn()
         };
-        // mongoose.Types.ObjectId.isValid.mockReturnValue(true);
     });
 
     test('should return 400 when socialContentId is invalid', async () => {
@@ -241,7 +243,7 @@ describe('deleteSocialContent', () => {
         await deleteSocialContent(req, res);
 
         expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.send).toHaveBeenCalledWith('Content not found');
+        expect(res.send).toHaveBeenCalledWith('Social content not found');
     });
 
     test('should return 403 when user has no permission to delete content', async () => {
@@ -254,7 +256,7 @@ describe('deleteSocialContent', () => {
         await deleteSocialContent(req, res);
 
         expect(res.status).toHaveBeenCalledWith(403);
-        expect(res.send).toHaveBeenCalledWith('No permission to delete this content');
+        expect(res.send).toHaveBeenCalledWith('No permission to delete this social content');
     });
 
     test('should return 500 when deletion fails', async () => {
@@ -269,7 +271,7 @@ describe('deleteSocialContent', () => {
         await deleteSocialContent(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith('Failed to delete content');
+        expect(res.send).toHaveBeenCalledWith('Failed to delete social content');
     });
 
     test('should redirect to dashboard after successful deletion', async () => {

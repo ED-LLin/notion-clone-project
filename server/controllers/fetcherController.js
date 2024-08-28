@@ -55,7 +55,7 @@ exports.socialContentSubmit = async(req, res) => {
             res.status(400).send('Invalid request data');
         }
     } catch (error) {
-        logger.error(`User ${req.user.id} failed to load social content to MongoDB`, error); // 修改為 social content
+        logger.error(`User ${req.user.id} failed to load social content to MongoDB`, error);
         res.status(500).send('Internal Server Error');
     }
 };
