@@ -3,6 +3,7 @@ const { transformData } = require('../etl/transform');
 const { loadData } = require('../etl/load');
 const redisClient = require('../config/redisClient');
 const crypto = require('crypto');
+const logger = require('../config/logger');
 
 exports.etl = async (req, res, next) => {
     const socialUrl = req.body.socialUrl;
@@ -13,9 +14,8 @@ exports.etl = async (req, res, next) => {
         // 檢查 Redis cache
         const cachedContent = await redisClient.get(socialUrl);
         if (cachedContent) {
-            console.log(`Cache hit URL: ${socialUrl}`);
+            logger.info(`Cache hit URL: ${socialUrl}`);
             const cachedSocialData = JSON.parse(cachedContent);
-            // console.log(`從快取拿出來的資料 ${JSON.stringify(cachedContent, null, 2)}`);
             
             // 新增 user 和 createdAt 屬性
             cachedSocialData.user = userId;
@@ -27,26 +27,24 @@ exports.etl = async (req, res, next) => {
             
             // 將新的資料存回 Redis，使用 tempCacheId 作為鍵
             await redisClient.set(tempCacheId, JSON.stringify(cachedSocialData), { EX: 3600 });
-            // console.log(`修改之後被加到快取的資料 ${JSON.stringify(cachedSocialData, null, 2)}`);
-
+            logger.info(`Stored cached data with tempCacheId: ${tempCacheId}`);
+            
             // 將 cachedSocialData 儲存在 req.body 中
             req.body.cachedSocialData = cachedSocialData;
             return next();
-
         }
 
         // 提取資料
         const extractedData = await extractData(socialUrl, platform);
-        console.log(`ETL extracted`);
+        logger.info(`ETL extracted from ${socialUrl}`);
         
         // 轉換資料
         const transformedData = await transformData(socialUrl, platform, extractedData, userId);
-        console.log(`ETL transformed`);
-        console.log(`Transformed data's user:`, transformedData.user);
+        logger.info(`ETL transformed for userId: ${userId}`);
 
         // 加載資料
         const savedData = await loadData(transformedData);
-        console.log(`ETL loaded`);
+        logger.info(`ETL loaded for socialUrl: ${socialUrl}`);
 
         // 將結果存儲在 req 對象中
         req.body.savedData = savedData;
@@ -59,13 +57,13 @@ exports.etl = async (req, res, next) => {
             delete cacheData.user;
             delete cacheData.createdAt;
             await redisClient.set(socialUrl, JSON.stringify(cacheData), { EX: 3600 });
-            console.log(`URL: ${socialUrl} 已被存入快取 ${accessCount} 次`);
-            console.log(`資料已被存入快取`);
+            logger.info(`URL: ${socialUrl} has been cached ${accessCount} times`);
+            logger.info(`Data has been cached`);
         }
         // 調用 next() 將控制權交給下一個中間件
         next();
     } catch (error) {
-        console.error('ETL process failed', error);
+        logger.error('ETL process failed', error);
         res.status(500).send('ETL process failed');
     }
 };

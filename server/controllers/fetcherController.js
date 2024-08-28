@@ -3,6 +3,7 @@ const SocialData = require('../models/SocialData');
 const User = require('../models/User');
 const { loadData } = require('../etl/load');
 const redisClient = require('../config/redisClient');
+const logger = require('../config/logger');
 
 /**
  * @swagger
@@ -42,15 +43,19 @@ exports.socialContentSubmit = async(req, res) => {
         if (req.body.cachedSocialData && req.body.cachedSocialData.tempCacheId) {
             const tempCacheId = req.body.cachedSocialData.tempCacheId;
             await loadData(req.body.cachedSocialData);
+            logger.info(`User ${req.user.id} accessed cached social content with tempCacheId: ${tempCacheId}`);
             res.status(302).redirect(`/fetch-content/saved-content/tempId:${tempCacheId}`);
         // load data from API savedData
         } else if (req.body.savedData && req.body.savedData._id) {
-            res.status(302).redirect(`/fetch-content/saved-content/${req.body.savedData._id.toString()}`);
+            const savedDataId = req.body.savedData._id.toString();
+            logger.info(`User ${req.user.id} accessed social content with ID: ${savedDataId}`);
+            res.status(302).redirect(`/fetch-content/saved-content/${savedDataId}`);
         } else {
+            logger.warn(`User ${req.user.id} submitted invalid request data`);
             res.status(400).send('Invalid request data');
         }
     } catch (error) {
-        console.error('Failed to load cache content to MongoDB', error);
+        logger.error(`User ${req.user.id} failed to load social content to MongoDB`, error); // 修改為 social content
         res.status(500).send('Internal Server Error');
     }
 };
@@ -75,7 +80,7 @@ exports.socialContentSubmit = async(req, res) => {
  *       400:
  *         description: Invalid content ID format.
  *       404:
- *         description: Content not found or no permission to access.
+ *         description: Social content not found or no permission to access.
  *       500:
  *         description: Server error.
  */
@@ -90,33 +95,36 @@ exports.viewSocialContent = async(req, res) => {
             try {
                 socialContent = await redisClient.get(tempId);
                 if (!socialContent) {
+                    logger.warn(`User ${req.user.id} attempted to access non-existent or expired social content with tempId: ${tempId}.`);
                     return res.status(404).send('Cache data does not exist or has expired');
                 }
                 socialContent = JSON.parse(socialContent);
             } catch (error) {
-                console.error('Error retrieving cache data:', error);
+                logger.error(`User ${req.user.id} encountered an error retrieving social content:`, error);
                 return res.status(500).send('Failed to fetch cache data');
             }
         } else {
             if (!mongoose.Types.ObjectId.isValid(socialContentId)) {
+                logger.warn(`User ${req.user.id} provided an invalid social content ID: ${socialContentId}`);
                 return res.status(400).send('Invalid content ID format');
             }
 
-            // const socialDataQuery = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
             const socialData = await SocialData.findOne({ _id: socialContentId, user: req.user.id }).lean();
             if (!socialData) {
-                return res.status(404).send('Content not found or no permission');
+                logger.warn(`User ${req.user.id} attempted to access social content with ID: ${socialContentId}, but it was not found or they had no permission`);
+                return res.status(404).send('Social content not found or no permission');
             }
             socialContent = socialData;
         }
 
+        logger.info(`User ${req.user.id} successfully viewed social content with ID: ${socialContentId}`);
         res.status(200).render('./fetch-content/view-content', {
             socialContentId,
             socialContent,
             layout: '../views/layouts/dashboard'
         });
     } catch (error) {
-        console.error("Error viewing social content:", error);
+        logger.error(`User ${req.user.id} encountered an error viewing social content:`, error);
         res.status(500).send("Server error");
     }
 }
@@ -137,15 +145,15 @@ exports.viewSocialContent = async(req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Successfully deleted content and redirected to the dashboard.
+ *         description: Successfully deleted social content and redirected to the dashboard.
  *       400:
  *         description: Invalid content ID format.
  *       401:
  *         description: Unauthorized, user not logged in.
  *       403:
- *         description: No permission to delete this content.
+ *         description: No permission to delete this social content.
  *       404:
- *         description: Content not found.
+ *         description: Social content not found.
  *       500:
  *         description: Server error or database connection error.
  */
@@ -155,11 +163,13 @@ exports.deleteSocialContent = async (req, res) => {
 
         // 檢查 socialContentId 是否為有效的 ObjectId
         if (!mongoose.Types.ObjectId.isValid(socialContentId)) {
+            logger.warn(`User ${req.user.id} tried to delete with invalid social content ID: ${socialContentId}`);
             return res.status(400).send('Invalid content ID format');
         }
 
         // 檢查 req.user 是否存在
         if (!req.user || !req.user._id) {
+            logger.warn(`Unauthorized access attempt by user: ${req.user.id}`);
             return res.status(401).send('Unauthorized');
         }
 
@@ -167,25 +177,28 @@ exports.deleteSocialContent = async (req, res) => {
 
         // 檢查是否找到內容
         if (!socialContent) {
-            return res.status(404).send('Content not found');
+            logger.warn(`User ${req.user.id} attempted to delete social content with ID: ${socialContentId}, but it was not found`);
+            return res.status(404).send('Social content not found');
         }
 
         // 檢查用戶是否有權限刪除內容
         if (socialContent.user.toString() !== req.user._id.toString()) {
-            return res.status(403).send('No permission to delete this content');
+            logger.warn(`User ${req.user.id} attempted to delete social content with ID: ${socialContentId}, but has no permission`);
+            return res.status(403).send('No permission to delete this social content');
         }
 
         const deleteResult = await SocialData.findByIdAndDelete(socialContentId);
 
         // 檢查刪除操作是否成功
         if (!deleteResult) {
-            return res.status(500).send('Failed to delete content');
+            logger.error(`User ${req.user.id} failed to delete social content with ID: ${socialContentId}`);
+            return res.status(500).send('Failed to delete social content');
         }
 
+        logger.info(`User ${req.user.id} successfully deleted social content with ID: ${socialContentId}`);
         res.status(302).redirect('/dashboard');
     } catch (error) {
-        console.error('delete socialContent error: ', error);
-
+        logger.error(`User ${req.user.id} encountered an error while deleting social content:`, error);
         // 檢查是否為資料庫連接錯誤
         if (error instanceof mongoose.Error) {
             return res.status(500).send('Database connection error');

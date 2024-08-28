@@ -1,3 +1,4 @@
+const logger = require('../config/logger');
 /**
  * @swagger
  * /:
@@ -22,14 +23,16 @@ exports.homepage = async (req, res) => {
         };
 
         res.status(200).render('index', locals);
+        logger.info("Homepage rendered successfully");
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.status(500).send("Internal Server Error");
     }
 }
 
 exports.privacyPolicyPage = async (req, res) => {
-    res.render('privacy-policy', {
+    logger.info("Privacy policy page rendered successfully");
+    res.status(200).render('privacy-policy', {
         layouts: '../views/layouts/main'
-    })
+    });
 }

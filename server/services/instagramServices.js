@@ -1,6 +1,6 @@
 const axios = require('axios');
+const logger = require('../config/logger');
 
-// 獨立的函數用來獲取 Instagram 數據
 exports.fetchInstagramData = async (socialUrl) => {
     const options = {
         method: 'GET',
@@ -17,11 +17,11 @@ exports.fetchInstagramData = async (socialUrl) => {
 
     try {
         const response = await axios.request(options);
-        console.log(`response IG data gotten`);
-        return response.data
+        logger.info(`response IG data gotten`);
+        return response.data;
 
     } catch (error) {
-        console.error('Error fetching Instagram data:', error);
+        logger.error('Error fetching Instagram data:', error);
         throw error;
     }
 };

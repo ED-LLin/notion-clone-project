@@ -1,13 +1,16 @@
 const SocialData = require('../models/SocialData');
+const logger = require('../config/logger');
 
 exports.loadData = async (transformedData) => {
     try {
         const socialData = new SocialData(transformedData);
         const savedData = await socialData.save(); 
-        console.log(`load.js haved saved savedData to MongoDB`);
-        return savedData; // 返回儲存的資料
+        
+        logger.info(`load.js have saved savedData to MongoDB`);
+        return savedData;
     } catch (error) {
-        console.error('Error loading data', error);
-        throw new Error('Failed to load data'); // 拋出錯誤
+        
+        logger.error('Error loading data', error);
+        throw new Error('Failed to load data');
     }
 };

@@ -1,6 +1,6 @@
 const axios = require('axios');
+const logger = require('../config/logger');
 
-// 獨立的函數用來獲取 YouTube 數據
 exports.fetchYouTubeData = async (socialUrl) => {
     const videoId = socialUrl.split('v=')[1] || socialUrl.split('/').pop().split('?')[0];
     const options = {
@@ -15,11 +15,11 @@ exports.fetchYouTubeData = async (socialUrl) => {
 
     try {
         const response = await axios.request(options);
-        console.log(`YouTube data gotten`);
+        logger.info(`YouTube data gotten`);
         return response.data;
 
     } catch (error) {
-        console.error('Error fetching YouTube data:', error);
-        throw(error);
+        logger.error('Error fetching YouTube data:', error);
+        throw error;
     }
 };

@@ -1,8 +1,7 @@
 const youtubeService = require('../services/youtubeServices');
 const instagramService = require('../services/instagramServices');
 const facebookService = require('../services/facebookServices');
-// const fs = require('fs');
-// const path = require('path');
+const logger = require('../config/logger');
 
 exports.extractData = async (socialUrl, platform) => {
     let extractedData;
@@ -15,9 +14,6 @@ exports.extractData = async (socialUrl, platform) => {
         extractedData = await facebookService.fetchFacebookData(socialUrl);
     }
 
-    // const filePath = path.join(__dirname, '../../fetchedSampleData', `${platform}-data.json`);
-    // fs.writeFileSync(filePath, JSON.stringify(extractedData, null, 2));
-
-    console.log(`extract successfully`);
+    logger.info(`extract successfully`);
     return extractedData;
 };

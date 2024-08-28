@@ -1,6 +1,7 @@
 require('dotenv').config({ path: '../../.env' }); // Specify the path to the .env file
 const OpenAI = require("openai");
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const logger = require('../config/logger');
 
 exports.singleTurnConversationJsonFormat = async function(systemMessage, prompt) {
     const completion = await openai.chat.completions.create({
@@ -15,24 +16,24 @@ exports.singleTurnConversationJsonFormat = async function(systemMessage, prompt)
     const finishReason = completion.choices[0].finish_reason;
     switch (finishReason) {
         case 'stop':
-            console.log('API returned a complete message.');
+            logger.info('API returned a complete message.');
             break;
         case 'length':
-            console.log('Incomplete model output due to max_tokens parameter or token limit.');
+            logger.warn('Incomplete model output due to max_tokens parameter or token limit.');
             break;
         case 'function_call':
-            console.log('The model decided to call a function.');
+            logger.info('The model decided to call a function.');
             break;
         case 'content_filter':
-            console.log('Omitted content due to a flag from our content filters.');
+            logger.warn('Omitted content due to a flag from our content filters.');
             break;
         case 'null':
-            console.log('API response still in progress or incomplete.');
+            logger.warn('API response still in progress or incomplete.');
             break;
         default:
-            console.log('Unknown finish reason.');
+            logger.error('Unknown finish reason.');
     }
 
-    // console.log(`response by AI: ${JSON.stringify(completion, null, 2)}`);
+    // logger.info(`response by AI: ${JSON.stringify(completion, null, 2)}`);
     return completion;
 }

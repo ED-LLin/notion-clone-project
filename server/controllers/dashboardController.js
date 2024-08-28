@@ -3,6 +3,7 @@ const Note = require('../models/Note');
 const User = require('../models/User');
 const { search } = require('../routes');
 const SocialData = require('../models/SocialData');
+const logger = require('../config/logger');
 
 /**
  * @swagger
@@ -34,6 +35,7 @@ exports.dashboard = async(req, res) => {
             { $sort: {createdAt: -1}}
         ]);
 
+        logger.info(`User ${req.user.id} accessed the dashboard successfully.`);
         res.status(200).render('dashboard/index', {
             layout: '../views/layouts/dashboard',
             user,
@@ -41,7 +43,7 @@ exports.dashboard = async(req, res) => {
             socialData
         });
     } catch (error) {
-        console.log(error);
+        logger.error(`User ${req.user.id} encountered an error: ${error}`);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -70,7 +72,7 @@ exports.dashboardAddNote = async (req, res) => {
             layout: '../views/layouts/dashboard'
         });
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -104,9 +106,10 @@ exports.dashboardSubmitNote = async(req, res) => {
     try{
         req.body.user = req.user.id;
         await Note.create(req.body);
+        logger.info(`User ${req.user.id} created a new note with title: ${req.body.title}`);
         res.status(302).redirect('/dashboard');
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -143,6 +146,7 @@ exports.dashboardViewNote = async(req, res) => {
 
         // 檢查 noteId 是否為有效的 ObjectId
         if (!mongoose.Types.ObjectId.isValid(noteId)) {
+            logger.warn(`User ${req.user.id} provided an invalid note ID format: ${noteId}`);
             return res.status(404).send("Note not found or no permission");
         }
 
@@ -151,16 +155,18 @@ exports.dashboardViewNote = async(req, res) => {
                                 .lean();
 
         if (note) {
+            logger.info(`User ${req.user.id} accessed note: ${noteId}`);
             res.status(200).render('dashboard/view-notes', {
                 noteID: noteId,
                 note,
                 layout: '../views/layouts/dashboard'
             });
         } else {
+            logger.warn(`User ${req.user.id} attempted to access a note that was not found or had no permission: ${noteId}`);
             res.status(404).send("Note not found or no permission");
         }
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.status(500).send("Internal Server Error");
     }
 };
@@ -207,9 +213,10 @@ exports.dashboardUpdateNote = async(req, res) => {
             body: body
         }, { new: true }); // new: true 會返回更新後的文檔
 
-        res.redirect('/dashboard'); // 重定向到筆記的查看頁面
+        logger.info(`User ${req.user.id} updated note: ${noteId}`);
+        res.status(302).redirect('/dashboard');
     } catch (error) {
-        console.log(error);
+        logger.error(`User ${req.user.id} encountered an error: ${error}`);
         res.status(500).send("Unable to update note.");
     }
 };
@@ -240,9 +247,10 @@ exports.dashboardDeleteNote = async(req, res) => {
         const note = await Note.findById(noteId);
 
         await Note.deleteOne({ _id: noteId , user: req.user.id});
+        logger.info(`User ${req.user.id} deleted note: ${noteId}`);
         res.status(302).redirect('/dashboard');
     } catch (error) {
-        console.log(error);
+        logger.error(`User ${req.user.id} encountered an error: ${error}`);
         res.status(500).send("Error deleting the note.");
     }
 };
@@ -283,12 +291,13 @@ exports.dashboardSearch = async (req, res) => {
         }).where({ user: req.user.id})
         .lean();
 
+        logger.info(`User ${req.user.id} performed a search with term: ${searchTerm}`);
         res.status(200).render('dashboard/search', {
             notes,
             layout: '../views/layouts/dashboard'
         });
     } catch (error) {
-        console.log(error);
+        logger.error(`User ${req.user.id} encountered an error: ${error}`);
         res.status(500).send("Error during search.");
     }
 };
@@ -330,6 +339,8 @@ exports.viewTag = async (req, res) => {
             { $match: { aiTags: { $regex: new RegExp(tag, 'i') } } },
             { $sort: {createdAt: -1}}
         ]);
+        
+        logger.info(`User ${userId} viewed tag: ${tag}`);
         res.status(200).render('dashboard/view-tag', { 
             layouts: '../views/layouts/dashboard',
             tag,
@@ -337,6 +348,7 @@ exports.viewTag = async (req, res) => {
             notes 
         });
     } catch (error) {
+        logger.error(`User ${userId} encountered an error: ${error}`);
         res.status(500).send({ message: 'Server Error' });
     }
 };

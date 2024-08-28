@@ -1,4 +1,5 @@
 const redisClient = require('../config/redisClient');
+const logger = require('../config/logger');
 
 const blacklistChecker = async (req, res, next) => {
   const ip = req.ip;
@@ -8,10 +9,11 @@ const blacklistChecker = async (req, res, next) => {
   try {
     const ttl = await redisClient.ttl(`blacklist:${ip}`);
   } catch (err) {
-    console.error('Failed to get TTL:', err);
+    logger.error('Failed to get TTL:', err);
   }
 
   if (isBlacklisted) {
+    logger.warn(`IP ${ip} is blacklisted for ${ttl} ms`);
     return res.status(403).send('You are temporarily blacklisted. Please try again later.');
   }
   next();

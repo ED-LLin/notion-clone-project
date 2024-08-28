@@ -12,24 +12,19 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const redisClient = require('./server/config/redisClient');
 const rateLimiter = require('./server/middleware/rateLimiter');
 const blacklistChecker = require('./server/middleware/blacklistChecker');
-const logger = require('./logger');
+const logger = require('./server/config/logger');
 
 const app = express()
 const port = process.env.PORT || 3000;
-
-// 使用 logger 來記錄不同級別的日誌訊息
-logger.info('This is an info message'); 
-logger.warn('This is a warning message'); 
-logger.error('This is an error message'); 
 
 // 檢查 ip 是否為黑名單
 app.use(blacklistChecker);
 
 // 用 rate limiter 限制流量
 if (process.env.NODE_ENV !== 'test') {
-  app.use(rateLimiter);
+    app.use(rateLimiter);
 } else {
-    console.log('rateLimiter not working');
+    logger.info('rateLimiter is paused for test');
 }
 
 app.use(session({
@@ -67,5 +62,5 @@ app.use('/', require('./server/routes/index'));
 app.use('/', require('./server/routes/redis'));
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on port ${port}`)
+    logger.info(`Server is running on port ${port}`)
 });

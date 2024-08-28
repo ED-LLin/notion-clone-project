@@ -3,6 +3,7 @@ const router = express.Router();
 const {isLoggedIn} = require('../middleware/checkAuth')
 const dashboardController = require('../controllers/dashboardController');
 const { addAiTagForNote } = require('../middleware/aiTagging');
+const logger = require('../config/logger');
 
 // Dashboard Route
 router.get('/',isLoggedIn ,dashboardController.dashboard);

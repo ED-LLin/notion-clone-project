@@ -1,4 +1,5 @@
 const { singleTurnConversationJsonFormat } = require("../services/openAIServices");
+const logger = require('../config/logger');
 require('dotenv').config({ path: '../../.env' });
 
 exports.transformData = async (socialUrl, platform, extractedData, userId) => {
@@ -63,37 +64,23 @@ exports.transformData = async (socialUrl, platform, extractedData, userId) => {
     }
     // 在資料中加入 user ID
     transformedData.user = userId;
-    console.log('transform set user to:', transformedData.user);
+    logger.info(`transform set user to: ${transformedData.user}`);
 
     // 增加 AI 標籤
     const titleAndTextContent = transformedData.title + transformedData.textContent;
-    // const messages = [
-    //     { role: "system", content: "You are a helpful knowledge assistant, who reply anything in traditional Chinese and always output JSON. Please only return a JSON object with a single key 'tags' which is an array of three category tags." },
-    //     { role: "user", content: `為以下內容提供三個分類標籤 ${titleAndTextContent}` }
-    // ]
     const systemMessage = "You are a helpful knowledge assistant, who reply anything in traditional Chinese and always output JSON. Please only return a JSON object with a single key 'tags' which is an array of three category tags."
     const prompt = `為以下內容提供三個分類標籤 ${titleAndTextContent}`
 
     try {
-        const aiResponse = await singleTurnConversationJsonFormat(systemMessage, prompt); // 回傳 JSON 字串，而非 JS 物件
-        const aiTags = JSON.parse(aiResponse.choices[0].message.content).tags; // 透過 JSON.parse 解析
-        console.log(`AI tagging success!`, aiTags);
+        const aiResponse = await singleTurnConversationJsonFormat(systemMessage, prompt);
+        const aiTags = JSON.parse(aiResponse.choices[0].message.content).tags;
+        logger.info(`AI tagging success!`, aiTags);
         transformedData.aiTags = aiTags;
     } catch (error) {
-        console.error('Error during social content AI tagging', error);
+        logger.error('Error during social content AI tagging', error);
         throw error;
     }
 
-    console.log(`transformed.js is transformed`);
+    logger.info(`transformed.js is transformed`);
     return transformedData;
 };
-
-// 測試程式碼
-// (async () => {
-//     const socialUrl = 'https://www.instagram.com/p/C9ANZUiP5O5/?utm_source=ig_web_copy_link';
-//     const platform = 'instagram';  
-//     const extractedData = require('../../fetchedSampleData/ig-album-data.json');
-    
-//     const result = await exports.transformData(socialUrl, platform, extractedData);
-//     console.log(result);
-// })();

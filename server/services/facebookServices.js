@@ -1,4 +1,5 @@
 const axios = require('axios');
+const logger = require('../config/logger');
 
 exports.fetchFacebookData = async (socialUrl) => {
     const options = {
@@ -15,11 +16,11 @@ exports.fetchFacebookData = async (socialUrl) => {
 
     try {
         const response = await axios.request(options);
-        console.log(`response FB data: ${JSON.stringify(response.data, null, 2)}`);
+        logger.info(`response FB data: ${JSON.stringify(response.data, null, 2)}`);
         return response.data;
         
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching Facebook data:', error);
         throw error;
     }
 };

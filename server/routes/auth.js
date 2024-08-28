@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
+const logger = require('../config/logger');
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -24,19 +25,22 @@ async function(accessToken, refreshToken, profile, done) {
         let user = await User.findOne({ googleID: profile.id });
 
         if (user) {
+            logger.info('User found:', user); 
             done(null, user);
         } else {
             user = await User.create(newUser);
+            logger.info('New user created:', user); 
             done(null, user);
         }
 
     } catch (error) {
         if (error.code === 11000) {  // 捕捉重複鍵錯誤
             let user = await User.findOne({ googleID: profile.id });
+            logger.warn('Duplicate key error, user found:', user); 
             done(null, user);
         } else {
-            console.log(error);
-            done(error);  // 確保在捕捉到錯誤時調用 done
+            logger.error('Error during authentication:', error);
+            done(error);
         }
     }
 
@@ -56,7 +60,9 @@ async function(accessToken, refreshToken, profile, done) {
  *         description: 重定向到 Google 登錄頁面
  */
 router.get('/auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile']}));
+ passport.authenticate('google', { 
+    scope: ['email', 'profile'] 
+  }));
 
 /**
  * @swagger
@@ -108,9 +114,10 @@ router.get('/login-failure', (req, res) => {
 router.post('/logout', (req, res) => {
     req.session.destroy((error) => {
         if (error) {
-            console.log(error);
+            logger.error('Error during logout:', error);
             res.status(500).send('Error logging out');
         } else {
+            logger.info('User logged out successfully');
             res.status(302).redirect('/');
         }
     });
@@ -118,13 +125,16 @@ router.post('/logout', (req, res) => {
 
 // 序列化使用者（取得使用者資料）
 passport.serializeUser((user, done) => {
+    logger.info(`User serialized: ${user.id}`);
     done(null, user.id);
 });
-
 
 // 反序列化使用者（取得使用者資料）
 passport.deserializeUser((id, done) => {
     User.findById(id, (err, user) => {
+        if (err) {
+            logger.error('Error during user deserialization:', err);
+        }
         done(err, user);
     });
 });

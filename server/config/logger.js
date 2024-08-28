@@ -1,4 +1,3 @@
-// logger.js
 const winston = require('winston');
 const axios = require('axios');
 const Transport = require('winston-transport');
