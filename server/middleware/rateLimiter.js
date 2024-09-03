@@ -12,8 +12,8 @@ const limiter = rateLimit({
   handler: async (req, res) => {
     const ip = req.ip;
     try {
-      await redisClient.set(`blacklist:${ip}`, '1', { EX: 10 });
-      logger.warn(`IP ${ip} has been blacklisted for 10 seconds.`);
+      await redisClient.set(`blacklist:${ip}`, '1', { EX: 3600 });
+      logger.warn(`IP ${ip} has been blacklisted for an hoour.`);
     } catch (err) {
       logger.error('Failed to set blacklist:', err);
     }
