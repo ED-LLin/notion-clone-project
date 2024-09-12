@@ -4,7 +4,6 @@ on: # 觸發條件
   push: # 當推送到以下分支時觸發
     branches:
       - main # 主分支
-      - ci-cd-add-unit-test # 設置 CI/CD 的分支
   pull_request: # 當拉取請求到以下分支時觸發
     branches:
       - main # 主分支
@@ -37,7 +36,7 @@ jobs: # 工作
             sudo docker-compose -f docker-compose.test.yml up -d --remove-orphans &&
             echo 'Waiting for containers to start...'
             sleep 20 &&
-            echo 'Running testsß...'
+            echo 'Running tests...'
             sudo docker exec notion-clone-project_app_1 npm test -- --watch=false
           "
 
