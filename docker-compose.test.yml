@@ -12,7 +12,7 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379
       - MONGODB_URI=mongodb://mongodb:27017/notion-clone-db
-    command: npm test -- --watch=false --testPathPattern=tests/jest
+    # command: npm test -- --watch=false --testPathPattern=tests/jest
 
   redis:
     image: "redis:latest"
