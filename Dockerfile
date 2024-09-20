@@ -1,5 +1,5 @@
 # 使用一個基礎映像，例如 Node.js
-FROM node:14
+FROM node:latest
 
 # 設置工作目錄
 WORKDIR /app
