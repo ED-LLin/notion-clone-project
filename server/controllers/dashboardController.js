@@ -204,13 +204,14 @@ exports.dashboardViewNote = async(req, res) => {
  */
 exports.dashboardUpdateNote = async(req, res) => {
     try {
-        const { title, body } = req.body;
+        const { title, body, aiTags } = req.body; // 加入 aiTags
         const noteId = req.params.id;
 
         // 更新筆記
         await Note.findByIdAndUpdate(noteId, {
             title: title,
-            body: body
+            body: body,
+            aiTags: aiTags // 更新 aiTags 欄位
         }, { new: true }); // new: true 會返回更新後的文檔
 
         logger.info(`User ${req.user.id} updated note: ${noteId}`);
